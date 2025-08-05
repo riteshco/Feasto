@@ -20,6 +20,11 @@ func Run(){
 	router.HandleFunc("/register" , controllers.RegisterUser).Methods("POST")
 	router.HandleFunc("/api/register" , controllers.RegisterAPIUser).Methods("POST")
 
+	//--authentication--
+	// router.HandleFunc("/login" , controllers.LoginPage).Methods("GET")
+	// router.HandleFunc("/auth" , controllers.AuthenticateUser).Methods("POST")
+	router.HandleFunc("/api/auth" , controllers.AuthenticateUserAPI).Methods("POST")
+
 	fmt.Println("Listening on http://localhost:3000")
 	http.ListenAndServe(":3000" , router)
 }
