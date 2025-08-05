@@ -2,22 +2,28 @@ package api
 
 import (
 	"fmt"
-	"log"
+	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gorilla/mux"
+	"github.com/riteshco/Feasto/pkg/controllers"
 )
 
 
 func Run(){
-	app := fiber.New()
+	router := mux.NewRouter()
 
-	app.Get("/" , func (c *fiber.Ctx) error {
-		return c.SendString("Hello World!")
-	})
 
-	fmt.Printf("Listening on http://localhost:3000")
-	err := app.Listen(":3000")
-	if err != nil {
-		log.Fatalf("Failed to start the http server : %v" , err)
-	}	
+	router.HandleFunc("/" , test_handler ).Methods("GET")
+
+	//--Registration--
+	//router.HandleFunc("/register" , controllers.RegisterPage).Methods("GET")
+	router.HandleFunc("/register" , controllers.RegisterUser).Methods("POST")
+	router.HandleFunc("/api/register" , controllers.RegisterAPIUser).Methods("POST")
+
+	fmt.Println("Listening on http://localhost:3000")
+	http.ListenAndServe(":3000" , router)
+}
+
+func test_handler(w http.ResponseWriter , r * http.Request){
+	fmt.Fprintf(w , "Hello World!")
 }

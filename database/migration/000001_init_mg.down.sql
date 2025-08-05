@@ -1,0 +1,2 @@
+USE feasto;
+DROP TABLE IF EXISTS Users;
