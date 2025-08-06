@@ -1,0 +1,17 @@
+package controllers
+
+import (
+	"net/http"
+	"time"
+)
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:    "auth_token",
+		Value:   "",
+		Expires: time.Now(),
+	}
+
+	http.SetCookie(w, &cookie)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
