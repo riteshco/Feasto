@@ -1,5 +1,9 @@
 package types
 
+type UserRole struct {
+	Role string `json:"user_role"`
+}
+
 type UserRegister struct {
 	Username string `json:"username"`
 	MobileNumber string `json:"mobile_number"`

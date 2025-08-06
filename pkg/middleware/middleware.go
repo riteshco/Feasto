@@ -12,6 +12,7 @@ import (
 
 
 type MyClaims struct {
+	ID       string `json:"id"`
     Username string `json:"username"`
     Email    string `json:"email"`
     UserRole string `json:"user_role"`
@@ -50,6 +51,7 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 
 		if claims, ok := token.Claims.(*MyClaims); ok {
 				ctx := r.Context()
+				ctx = context.WithValue(ctx, "id" , claims.ID)
 				ctx = context.WithValue(ctx, "username", claims.Username)
 				ctx = context.WithValue(ctx, "email" , claims.Email)
 				ctx = context.WithValue(ctx, "user_role", claims.UserRole)

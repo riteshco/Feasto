@@ -30,3 +30,45 @@ func GetUserByEmail(ctx context.Context, email string) (types.User, error) {
 
 	return user, nil
 }
+
+func DeleteUserDB(id int) error {
+
+	query := "DELETE FROM Users WHERE id = ?"
+
+	result, err := DB.Exec(query, id)
+    if err != nil {
+        return fmt.Errorf("error deleting user: %v", err)
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return fmt.Errorf("error fetching rows affected: %v", err)
+    }
+
+    if rowsAffected == 0 {
+        return fmt.Errorf("no user found with ID %d", id)
+    }
+
+    return nil
+
+}
+
+func EditUserRoleDB(newRole string , id int) error {
+	query := "UPDATE Users SET user_role = ? WHERE id = ?"
+
+	result , err := DB.Exec(query, newRole , id)
+	if err != nil {
+        return fmt.Errorf("error changing user role: %v", err)
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return fmt.Errorf("error fetching rows affected: %v", err)
+    }
+
+    if rowsAffected == 0 {
+        return fmt.Errorf("no user found with ID %d", id)
+    }
+
+	return nil
+}

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -33,16 +34,16 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w, string(b), http.StatusBadRequest)
 		return
 	}
-
 	
 	dbUser , err := models.GetUserByEmail(r.Context() , email)
 	if err != nil {
-		log.Fatalf("Error fetching user from DB for authentication : %v" , err)
-	}
-
-	if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
-		log.Fatalf("Wrong Password")
-	}
+		fmt.Printf("Error fetching user from DB for authentication : %v\n" , err)
+	} else if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":  "Wrong Password",
+	})
+	} else {
 	
 	token , err := utils.GenerateJWTToken(dbUser)
 	if err != nil {
@@ -59,6 +60,7 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 		"role":     dbUser.UserRole,
 		"token":    token,
 	})
+}
 
 }
 
@@ -81,27 +83,29 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	
 	dbUser , err := models.GetUserByEmail(r.Context() , email)
 	if err != nil {
-		log.Fatalf("Error fetching user from DB for authentication : %v" , err)
-	}
-
-	if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
-		log.Fatalf("Wrong Password")
-	}
+		fmt.Printf("Error fetching user from DB for authentication : %v" , err)
+	} else if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":  "Wrong Password",
+	})
+	} else {
 	
 	token , err := utils.GenerateJWTToken(dbUser)
 	if err != nil {
 		log.Fatalf("Error generating JWT Token : %v" , err)
 	}
 
-	// Save token in cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:     "auth_token",
-		Value:    token,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false, // set true in production with HTTPS
-		SameSite: http.SameSiteStrictMode,
-		MaxAge:   60 * 60,
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":  "authentication successful",
+		"user_id":  dbUser.Id,
+		"username": dbUser.Username,
+		"email":    dbUser.Email,
+		"role":     dbUser.UserRole,
+		"token":    token,
 	})
-	
+}
+		
 }

@@ -15,6 +15,7 @@ func GenerateJWTToken(user types.User) (string , error) {
 
 	// Create claims
 	claims := jwt.MapClaims{
+		"id"      :  user.Id,
 		"username":  user.Username,
 		"email":     user.Email,
 		"user_role": user.UserRole,
