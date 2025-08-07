@@ -66,3 +66,37 @@ func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w , "Removed from Cart Successfully!!" , http.StatusOK)
 	}
 }
+
+func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	OrderId , err := strconv.Atoi(idStr)
+	CustomerID := r.Context().Value("id").(int)
+	if err != nil {
+		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+	}
+	status , err := models.DeleteOrderDB(CustomerID , OrderId)
+	if err != nil {
+		http.Error(w , err.Error() , status)
+		return
+	} else {
+		http.Error(w , "Deleted Order Successfully!!" , status)
+	}
+}
+
+func PaymentDoneAPI(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	PaymentId , err := strconv.Atoi(idStr)
+	CustomerID := r.Context().Value("id").(int)
+	if err != nil {
+		http.Error(w , "Invalid Payment ID" , http.StatusBadRequest)
+	}
+	status , err := models.PaymentStatusCompleteDB(CustomerID , PaymentId)
+	if err != nil {
+		http.Error(w , err.Error() , status)
+		return
+	} else {
+		http.Error(w , "Payment Completed Successfully!!" , status)
+	}
+}

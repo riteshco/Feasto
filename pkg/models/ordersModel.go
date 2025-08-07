@@ -33,6 +33,48 @@ func GetAllOrdersDB() ([]types.Order , error){
     return orders, nil
 }
 
+func DeleteOrderDB(customerID int , OrderID int) (int , error) {
+	query := "DELETE FROM Orders WHERE id = ? AND customer_id = ?"
+	result , err := DB.Exec(query , OrderID , customerID)
+	if err != nil {
+		fmt.Println("error deleting order in database for bill generation:", err)
+		return http.StatusInternalServerError , fmt.Errorf("database update error")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no order found for given order ID and customer to delete")
+	}
+
+	return http.StatusOK , nil
+}
+
+func CompleteOrderDB(OrderID int) (int , error) {
+	query := `UPDATE Orders SET current_status = "delivered" WHERE id = ?`
+
+	result , err := DB.Exec(query , OrderID)
+	if err != nil {
+		return http.StatusInternalServerError , fmt.Errorf("error in updating order status")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no order found for given order ID and customer to completing")
+	}
+
+	return http.StatusOK , nil
+}
+
 func GetOrdersByCustomerId(customerID int) ([]types.Order , error){
 	query := "SELECT * FROM Orders Where customer_id = ?"
 	

@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/riteshco/Feasto/pkg/types"
 )
@@ -30,4 +31,25 @@ func GetAllPaymentsDB() ([]types.Payment , error){
     }
 
     return payments, nil
+}
+
+func PaymentStatusCompleteDB(CustomerID int , PaymentID int) (int , error) {
+    query := `UPDATE Payments SET payment_status = "completed" WHERE id = ? AND user_id = ?`
+
+    result , err := DB.Exec(query , PaymentID , CustomerID )
+    if err != nil {
+        return http.StatusInternalServerError, fmt.Errorf("error completing the payment: %v", err)
+    }
+
+    rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no payment found for given payment ID and customer to complete")
+	}
+
+	return http.StatusOK , nil
 }
