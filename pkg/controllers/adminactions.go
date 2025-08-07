@@ -162,5 +162,27 @@ func DeleteProductAPI(w http.ResponseWriter , r *http.Request) {
 		} else {
 			http.Error(w , "Product Deleted Successfully!!" , http.StatusOK)
 		}
+	} else {
+		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
+	}
+}
+
+func GenBillAPI(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	orderId , err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid Order Id" , http.StatusBadRequest)
+	}
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		statusCode , err := models.AcceptOrderDB(orderId)
+		if err != nil {
+			http.Error(w , err.Error() , statusCode)
+		} else {
+			http.Error(w , "Bill generated Successfully!" , statusCode)
+		}
+	} else {
+		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
 	}
 }

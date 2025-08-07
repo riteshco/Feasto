@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/riteshco/Feasto/pkg/types"
 )
@@ -78,3 +79,32 @@ func RemoveOrderItemDB(customerID int, ItemID int) error {
 	}
 	return nil
 }
+
+func AcceptOrderDB(paymentID int) (int , error) {
+	query := `
+		UPDATE Orders 
+		SET current_status = "accepted" 
+		WHERE id = (
+			SELECT order_id FROM Payments WHERE id = ?
+		)
+	`
+
+	result, err := DB.Exec(query, paymentID)
+	if err != nil {
+		fmt.Println("error accepting order in database for bill generation:", err)
+		return http.StatusInternalServerError , fmt.Errorf("database update error")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no payment found for given order ID to accept the order")
+	}
+
+	return http.StatusOK , nil
+}
+

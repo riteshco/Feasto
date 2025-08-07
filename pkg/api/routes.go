@@ -36,9 +36,9 @@ func Run(){
 	// authRouter.HandleFunc("/cart", controllers.CartPage).Methods("GET")
 	// authRouter.HandleFunc("/categories", controllers.CategoriesPage).Methods("GET")
 	// authRouter.HandleFunc("/past-orders", controllers.PastOrdersPage).Methods("GET")
+	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
 	// authRouter.HandleFunc("/order/items/{id:[0-9]+}", controllers.OrderItemsPage).Methods("GET")
 	// authRouter.HandleFunc("/order/payment/{id:[0-9]+}", controllers.OrderPaymentPage).Methods("GET")
-	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
 	
 	
 	// authRouter.HandleFunc("/add-food" , controllers.AddFood).Methods("POST")
@@ -58,22 +58,22 @@ func Run(){
 	authRouter.HandleFunc("/api/users" , controllers.GetAllUsers).Methods("GET")
 	
 	authRouter.HandleFunc("/api/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("POST")
-
-
+	
+	authRouter.HandleFunc("/api/gen-bill/{id:[0-9]+}" , controllers.GenBillAPI).Methods("POST")
+	
 	// -- User actions --
 	// authRouter.HandleFunc("/orders", controllers.OrdersPage).Methods("GET")
 	authRouter.HandleFunc("/api/orders", controllers.UserOrders).Methods("GET")
-
+	
 	authRouter.HandleFunc("/api/add-one-to-cart/{id:[0-9]+}" , controllers.AddOneToCartAPI).Methods("POST")
 	
 	authRouter.HandleFunc("/api/remove-from-cart/{id:[0-9]+}" , controllers.RemoveFromCartAPI).Methods("POST")
 	
-
+	
 	// -- api calls --
 	// authRouter.HandleFunc("/api/payment-done/{id:[0-9]+}" , controllers.PaymentDone).Methods("POST")
 	// authRouter.HandleFunc("/api/order-done/{id:[0-9]+}" , controllers.OrderDone).Methods("POST")
 	// authRouter.HandleFunc("/api/delete-order/{id:[0-9]+}" , controllers.DeleteOrder).Methods("POST")
-	// authRouter.HandleFunc("/api/gen-bill/{id:[0-9]+}" , controllers.GenBill).Methods("POST")
 	
 	// ---Needs Front-end---
 	// authRouter.HandleFunc("/add-to-cart/{id:[0-9]+}" , controllers.AddToCart).Methods("POST")
