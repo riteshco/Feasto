@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -71,4 +72,46 @@ func EditUserRoleDB(newRole string , id int) error {
     }
 
 	return nil
+}
+
+func GetAllUsersDB() ([]types.User , error) {
+	query := "SELECT * FROM Users"
+
+	rows, err := DB.Query(query)
+    if err != nil {
+        return nil, fmt.Errorf("error fetching users: %v", err)
+    }
+    defer rows.Close()
+
+    var users []types.User
+
+    for rows.Next() {
+        var u types.User
+        if err := rows.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword); err != nil {
+            return nil, fmt.Errorf("error scanning row: %v", err)
+        }
+        users = append(users, u)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("error iterating rows: %v", err)
+    }
+
+    return users, nil
+}
+
+func GetSingleUserDB(id int) (types.User , error) {
+	query := "SELECT * FROM Users Where id = ?"
+
+	var u types.User
+	row := DB.QueryRow(query, id)
+	err := row.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.User{}, fmt.Errorf("user not found with ID : %d" , id)
+		}
+		return types.User{}, fmt.Errorf("query single user: %w", err)
+	}
+
+	return u, nil
 }

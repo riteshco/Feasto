@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/riteshco/Feasto/pkg/controllers/passwords"
@@ -25,11 +24,10 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 	password := user.Password
 
 	if username == "" || email=="" || password==""{
-		log.Fatalf("All fields are required to login!")
-		toSend := types.Message{Message: "Empty fields"}
+		toSend := types.Message{Message: "All fields are required to login!"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusBadRequest)
 		return
@@ -47,7 +45,7 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 	
 	token , err := utils.GenerateJWTToken(dbUser)
 	if err != nil {
-		log.Fatalf("Error generating JWT Token : %v" , err)
+		fmt.Printf("Error generating JWT Token : %v" , err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -70,11 +68,10 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	password := r.PostFormValue("password")
 
 	if username == "" || email=="" || password==""{
-		log.Fatalf("All fields are required to login!")
-		toSend := types.Message{Message: "Empty fields"}
+		toSend := types.Message{Message: "All fields are required to login!"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusBadRequest)
 		return
@@ -93,7 +90,7 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	
 	token , err := utils.GenerateJWTToken(dbUser)
 	if err != nil {
-		log.Fatalf("Error generating JWT Token : %v" , err)
+		fmt.Printf("Error generating JWT Token : %v" , err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

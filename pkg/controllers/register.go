@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/riteshco/Feasto/pkg/controllers/passwords"
@@ -19,11 +18,11 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 	password := r.PostFormValue("password")
 
 	if username == "" || mobile_number== "" || email=="" || password==""{
-		log.Fatalf("All fields are required to register!")
-		toSend := types.Message{Message: "Empty fields"}
+		fmt.Println("All fields are required to register!")
+		toSend := types.Message{Message: "All fields are required to register!"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusBadRequest)
 		return
@@ -41,11 +40,11 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 
 	success , err := models.RegisterUser(register)
 	if err != nil {
-		log.Fatalf("Could not log user")
+		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusInternalServerError)
 		return
@@ -55,7 +54,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		toSend := types.Message{Message: "User registered successfully"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusOK)
 		return
@@ -75,11 +74,11 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 	password := user.Password
 
 	if username == "" || mobile_number== "" || email=="" || password==""{
-		log.Fatalf("All fields are required to register!")
-		toSend := types.Message{Message: "Empty fields"}
+		fmt.Println("All fields are required to register!")
+		toSend := types.Message{Message: "All fields are required to register!"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusBadRequest)
 		return
@@ -97,11 +96,11 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 
 	success , err := models.RegisterUser(register)
 	if err != nil {
-		log.Fatalf("Could not log user")
+		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusInternalServerError)
 		return
@@ -111,7 +110,7 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		toSend := types.Message{Message: "User registered successfully"}
 		b, err := json.Marshal(toSend)
 		if err != nil {
-			log.Fatal(err, "could not marshal message")
+			fmt.Println(err, "could not marshal message")
 		}
 		http.Error(w, string(b), http.StatusOK)
 		return

@@ -76,3 +76,70 @@ func EditUserRoleAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
 	}
 }
+
+func GetAllUsers(w http.ResponseWriter , r *http.Request) {
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		users , err := models.GetAllUsersDB()
+		if err != nil {
+        	http.Error(w, err.Error(), http.StatusInternalServerError)
+        	return
+    	}
+    	w.Header().Set("Content-Type", "application/json")
+    	json.NewEncoder(w).Encode(users)
+	} else {
+		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
+	}
+}
+
+func GetSingleUser(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+    	http.Error(w, "Invalid user ID", http.StatusBadRequest)
+    	return
+	}
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		user , err := models.GetSingleUserDB(id)
+		if err != nil {
+        	http.Error(w, err.Error(), http.StatusInternalServerError)
+        	return
+    	}
+    	w.Header().Set("Content-Type", "application/json")
+    	json.NewEncoder(w).Encode(user)
+	} else {
+		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
+	}
+}
+
+func GetAllOrders(w http.ResponseWriter , r *http.Request) {
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		orders , err := models.GetAllOrdersDB()
+		if err != nil {
+        	http.Error(w, err.Error(), http.StatusInternalServerError)
+        	return
+    	}
+    	w.Header().Set("Content-Type", "application/json")
+    	json.NewEncoder(w).Encode(orders)
+	} else {
+		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
+	}
+}
+
+func GetAllPayments(w http.ResponseWriter , r *http.Request) {
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		payments , err := models.GetAllPaymentsDB()
+		if err != nil {
+        	http.Error(w, err.Error(), http.StatusInternalServerError)
+        	return
+    	}
+    	w.Header().Set("Content-Type", "application/json")
+    	json.NewEncoder(w).Encode(payments)
+	} else {
+		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
+	}
+}

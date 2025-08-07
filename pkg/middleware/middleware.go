@@ -2,22 +2,18 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
+	"github.com/riteshco/Feasto/pkg/types"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
 
-type MyClaims struct {
-	ID       string `json:"id"`
-    Username string `json:"username"`
-    Email    string `json:"email"`
-    UserRole string `json:"user_role"`
-    jwt.RegisteredClaims
-}
 
 func JWTAuthMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -27,29 +23,29 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 			if strings.Trim(authHeader, " \n") != "" && strings.HasPrefix(authHeader, "Bearer ") {
 				tokenString = authHeader[7:]
 			}
-
 			if tokenString == "" {
 				cookie, err := r.Cookie("auth_token")
 				if err != nil {
-					http.Error(w, "unauthorized", http.StatusUnauthorized);
+					http.Error(w, "No Token present", http.StatusUnauthorized);
 					return
 				}
 				tokenString = cookie.Value
 		}
 
         secret := os.Getenv("JWT_SECRET")
-        token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(t *jwt.Token) (interface{}, error) {
+        token, err := jwt.ParseWithClaims(tokenString, &types.MyClaims{}, func(t *jwt.Token) (interface{}, error) {
             if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
                 return nil, jwt.ErrSignatureInvalid
             }
             return []byte(secret), nil
         })
+		fmt.Println(err)
         if err != nil || !token.Valid {
-            http.Error(w, "unauthorized", http.StatusUnauthorized); return
+            http.Error(w, "Invalid Token", http.StatusUnauthorized); return
         }
 
 
-		if claims, ok := token.Claims.(*MyClaims); ok {
+		if claims, ok := token.Claims.(*types.MyClaims); ok {
 				ctx := r.Context()
 				ctx = context.WithValue(ctx, "id" , claims.ID)
 				ctx = context.WithValue(ctx, "username", claims.Username)
