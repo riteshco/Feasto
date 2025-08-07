@@ -1,6 +1,10 @@
 package types
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"database/sql"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type UserRole struct {
 	Role string `json:"user_role"`
@@ -49,7 +53,7 @@ type Order struct {
 	CreatedAt string `json:"created_at"`
 	CurrentStatus string `json:"current_status"`
 	CustomerId int `json:"customer_id"`
-	ChefId int `json:"chef_id"`
+	ChefId sql.NullInt64 `json:"chef_id"`
 	TableNumber int `json:"table_number"`
 	Instructions string `json:"instructions"`
 }

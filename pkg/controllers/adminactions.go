@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -120,6 +121,7 @@ func GetAllOrders(w http.ResponseWriter , r *http.Request) {
 		orders , err := models.GetAllOrdersDB()
 		if err != nil {
         	http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println("Error in getting all-orders from DB : " , err)
         	return
     	}
     	w.Header().Set("Content-Type", "application/json")
@@ -141,5 +143,24 @@ func GetAllPayments(w http.ResponseWriter , r *http.Request) {
     	json.NewEncoder(w).Encode(payments)
 	} else {
 		http.Error(w, "unauthorized access", http.StatusUnauthorized); return
+	}
+}
+
+func DeleteProductAPI(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	productId , err := strconv.Atoi(idStr)
+	if err != nil{
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+    	return
+	} 
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == "admin" {
+		err := models.DeleteProductDB(productId)
+		if err != nil {
+			http.Error(w , "Server Error" , http.StatusInternalServerError)
+		} else {
+			http.Error(w , "Product Deleted Successfully!!" , http.StatusOK)
+		}
 	}
 }

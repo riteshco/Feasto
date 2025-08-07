@@ -24,28 +24,12 @@ func AddFoodDB(food types.FoodToAdd) (bool , error){
 	}
 }
 
-func GetAllOrdersDB() ([]types.Order , error){
-	query := "SELECT * FROM Orders"
-	
-	rows, err := DB.Query(query)
-    if err != nil {
-        return nil, fmt.Errorf("error fetching orders: %v", err)
-    }
-    defer rows.Close()
-
-    var orders []types.Order
-
-    for rows.Next() {
-        var o types.Order
-        if err := rows.Scan(&o.Id, &o.CreatedAt, &o.CurrentStatus, &o.CustomerId, &o.ChefId, &o.TableNumber , &o.Instructions); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
-        }
-        orders = append(orders, o)
-    }
-
-    if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
-    }
-
-    return orders, nil
+func DeleteProductDB(productID int) error {
+	query := "DELETE FROM Products WHERE id = ?"
+	_ , err := DB.Exec(query , productID)
+	if err != nil {
+		fmt.Println("error deleting product from database:", err)
+		return fmt.Errorf("error in database")
+	}
+	return nil
 }
