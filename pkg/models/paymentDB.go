@@ -1,6 +1,8 @@
 package models
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -31,6 +33,21 @@ func GetAllPaymentsDB() ([]types.Payment , error){
     }
 
     return payments, nil
+}
+
+func GetPaymentThroughOrderDB(OrderID int , CustomerID int) (types.Payment , int , error) {
+    query := "SELECT * FROM Payments WHERE order_id = ? AND user_id = ?"
+    var p types.Payment
+	row := DB.QueryRow(query, OrderID , CustomerID)
+	err := row.Scan(&p.Id, &p.UserId, &p.OrderId, &p.TotalPayment, &p.PaymentStatus)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.Payment{}, http.StatusNotFound ,fmt.Errorf("user not found with OrderID : %d and CustomerID : %d" , OrderID , CustomerID)
+		}
+		return types.Payment{}, http.StatusInternalServerError ,fmt.Errorf("query single user: %w", err)
+	}
+
+	return p, http.StatusOK ,nil
 }
 
 func PaymentStatusCompleteDB(CustomerID int , PaymentID int) (int , error) {

@@ -6,6 +6,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type Quantity struct {
+	Count int `json:"quantity"`
+}
+
 type UserRole struct {
 	Role string `json:"user_role"`
 }
@@ -56,6 +60,15 @@ type Order struct {
 	ChefId sql.NullInt64 `json:"chef_id"`
 	TableNumber int `json:"table_number"`
 	Instructions string `json:"instructions"`
+}
+
+type Product struct {
+	Id int `json:"id"`
+	ProductName string `json:"product_name"`
+	IsAvailable bool `json:"isavailable"`
+	Price float64 `json:"price"`
+	Category string `json:"category"`
+	ImageUrl sql.NullString `json:"image_url"`
 }
 
 type FoodToAdd struct {

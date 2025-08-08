@@ -103,9 +103,9 @@ func GetSingleUser(w http.ResponseWriter , r *http.Request) {
 	}
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == "admin" {
-		user , err := models.GetSingleUserDB(id)
+		user , status , err := models.GetSingleUserDB(id)
 		if err != nil {
-        	http.Error(w, err.Error(), http.StatusInternalServerError)
+        	http.Error(w, err.Error(), status)
         	return
     	}
     	w.Header().Set("Content-Type", "application/json")

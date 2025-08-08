@@ -52,12 +52,12 @@ CREATE TABLE Payments (
 );
 
 -- admin account
--- password is "admin" for admin.
-INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES ('admin' , '1234512345' , 'admin@gmail.com' , 'admin' , '$2b$10$CXu.VPoykiOiBVfVMQ1Wm.qqHns7pAjc3QKAv4ZWEgRtfO/uhn9fK');
+-- password is "secret" for admin.
+INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES ('admin' , '1234512345' , 'admin@gmail.com' , 'admin' , '$2a$10$vzca.bQW09GcMu5UFVErCe6qmmt0vsLonHnen6NUJ7oQfXEM2pv0K');
 
 -- chef account
--- password is "admin" for chef as well.
-INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES ('chef' , '1234512344' , 'chef@gmail.com' , 'chef' , '$2b$10$CXu.VPoykiOiBVfVMQ1Wm.qqHns7pAjc3QKAv4ZWEgRtfO/uhn9fK');
+-- password is "secret" for chef as well.
+INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES ('chef' , '1234512344' , 'chef@gmail.com' , 'chef' , '$2a$10$vzca.bQW09GcMu5UFVErCe6qmmt0vsLonHnen6NUJ7oQfXEM2pv0K');
 
 -- demo products
 INSERT INTO Products (product_name , price , category , image_url) VALUES ('Pizza' , 399 , 'Fast Food' , '/demo_products/pizza.jpg');

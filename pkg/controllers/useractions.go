@@ -48,6 +48,31 @@ func AddOneToCartAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
+func AddToCartAPI(w http.ResponseWriter , r *http.Request){
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	productId , err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid product ID", http.StatusBadRequest)
+		return
+	}
+	CustomerID := r.Context().Value("id").(int)
+	quantStr := vars["quantity"]
+	quantity , err := strconv.Atoi(quantStr)
+	if err != nil || quantity <= 0 {
+		http.Error(w, "Invalid quantity", http.StatusBadRequest)
+		return
+	}
+	err = models.InsertOrderItemsDB(CustomerID , productId , quantity)
+	if err != nil {
+		http.Error(w , "Server Error" , http.StatusInternalServerError)
+		fmt.Println("Error in inserting orderItem by ID and quantity in DB : " , err)
+		return
+	} else {
+		http.Error(w , "Added to Cart successfully!!" , http.StatusOK)
+	}
+}
+
 func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -94,9 +119,28 @@ func PaymentDoneAPI(w http.ResponseWriter , r *http.Request) {
 	}
 	status , err := models.PaymentStatusCompleteDB(CustomerID , PaymentId)
 	if err != nil {
+		fmt.Println("Error in completing payment : " , err)
 		http.Error(w , err.Error() , status)
 		return
 	} else {
 		http.Error(w , "Payment Completed Successfully!!" , status)
 	}
+}
+
+func GetPaymentThroughOrderAPI(w http.ResponseWriter , r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	OrderId , err := strconv.Atoi(idStr)
+	CustomerID := r.Context().Value("id").(int)
+	if err != nil {
+		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+	}
+	payment , status , err := models.GetPaymentThroughOrderDB(OrderId , CustomerID)
+	if err != nil {
+		fmt.Println("Error in getting payment through order id : " , err)
+		http.Error(w , err.Error() , status)
+	}
+	w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(payment)
+
 }

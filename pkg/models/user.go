@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/riteshco/Feasto/pkg/types"
@@ -100,7 +101,7 @@ func GetAllUsersDB() ([]types.User , error) {
     return users, nil
 }
 
-func GetSingleUserDB(id int) (types.User , error) {
+func GetSingleUserDB(id int) (types.User , int , error) {
 	query := "SELECT * FROM Users Where id = ?"
 
 	var u types.User
@@ -108,10 +109,10 @@ func GetSingleUserDB(id int) (types.User , error) {
 	err := row.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return types.User{}, fmt.Errorf("user not found with ID : %d" , id)
+			return types.User{}, http.StatusNotFound ,fmt.Errorf("user not found with ID : %d" , id)
 		}
-		return types.User{}, fmt.Errorf("query single user: %w", err)
+		return types.User{}, http.StatusInternalServerError , fmt.Errorf("query single product: %w", err)
 	}
 
-	return u, nil
+	return u, http.StatusOK , nil
 }

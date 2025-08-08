@@ -6,3 +6,8 @@ CREATE TABLE IF NOT EXISTS Products (
     category varchar(100) DEFAULT NULL,
     image_url varchar(255) DEFAULT NULL
 );
+
+
+-- demo products
+INSERT INTO Products (product_name , price , category , image_url) VALUES ('Pizza' , 399 , 'Fast Food' , '/demo_products/pizza.jpg');
+INSERT INTO Products (product_name , price , category , image_url) VALUES ('Burger' , 129 , 'Fast Food' , '/demo_products/burger.jpg');

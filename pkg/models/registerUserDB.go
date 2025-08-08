@@ -2,12 +2,13 @@ package models
 
 import (
 	"fmt"
+	"net/http"
 
 	mysqldriver "github.com/go-sql-driver/mysql"
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func RegisterUser(user types.UserRegisterDB) (bool , error) {
+func RegisterUser(user types.UserRegisterDB) (bool , int , error) {
 
 
 	InsertUser := "INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES (? , ? , ? , ? , ?)"
@@ -15,13 +16,13 @@ func RegisterUser(user types.UserRegisterDB) (bool , error) {
 	if err != nil {
 		if mysqlErr, ok := err.(*mysqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
 			fmt.Println("Duplicate entry in registration")
-			return false, fmt.Errorf("user already exists")
+			return false, http.StatusAlreadyReported , fmt.Errorf("user already exists")
 		} else {
 			fmt.Println("error inserting into the database", err)
-			return false, fmt.Errorf("error in database")
+			return false, http.StatusInternalServerError , fmt.Errorf("error in database")
 		}
 	} else {
 		fmt.Println("User registered successfully")
-		return true, nil
+		return true, http.StatusOK , nil
 	}
 }

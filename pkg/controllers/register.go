@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/riteshco/Feasto/pkg/controllers/passwords"
 	"github.com/riteshco/Feasto/pkg/models"
 	"github.com/riteshco/Feasto/pkg/types"
+	"github.com/riteshco/Feasto/pkg/utils"
 )
 
 
@@ -16,6 +18,20 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 	mobile_number := r.PostFormValue("mobile")
 	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
+
+	username = strings.TrimSpace(username)
+	check_username := strings.ToLower(username)
+	if check_username == "admin" || check_username == "chef" {
+		fmt.Println("Tried to put admin or chef as username!")
+		http.Error(w , "This username is not allowed!" , http.StatusBadRequest)
+		return
+	}
+
+	if ! utils.IsValidEmail(email) {
+		fmt.Println("Didn't enter a valid email!")
+		http.Error(w , "Please enter a valid email!" , http.StatusBadRequest)
+		return
+	}
 
 	if username == "" || mobile_number== "" || email=="" || password==""{
 		fmt.Println("All fields are required to register!")
@@ -38,7 +54,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		HashedPassword: hashed_password,
 	}
 
-	success , err := models.RegisterUser(register)
+	success , status , err := models.RegisterUser(register)
 	if err != nil {
 		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
@@ -46,7 +62,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusInternalServerError)
+		http.Error(w, string(b), status)
 		return
 	}
 	if success {
@@ -56,7 +72,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusOK)
+		http.Error(w, string(b), status)
 		return
 	}
 }
@@ -73,6 +89,20 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 	email := user.Email
 	password := user.Password
 
+	username = strings.TrimSpace(username)
+	check_username := strings.ToLower(username)
+	if check_username == "admin" || check_username == "chef" {
+		fmt.Println("Tried to put admin or chef as username!")
+		http.Error(w , "This username is not allowed!" , http.StatusBadRequest)
+		return
+	}
+
+	if ! utils.IsValidEmail(email) {
+		fmt.Println("Didn't enter a valid email!")
+		http.Error(w , "Please enter a valid email!" , http.StatusBadRequest)
+		return
+	}
+
 	if username == "" || mobile_number== "" || email=="" || password==""{
 		fmt.Println("All fields are required to register!")
 		toSend := types.Message{Message: "All fields are required to register!"}
@@ -94,7 +124,7 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		HashedPassword: hashed_password,
 	}
 
-	success , err := models.RegisterUser(register)
+	success , status , err := models.RegisterUser(register)
 	if err != nil {
 		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
@@ -102,7 +132,7 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusInternalServerError)
+		http.Error(w, string(b), status)
 		return
 	}
 	if success {
@@ -112,7 +142,7 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusOK)
+		http.Error(w, string(b), status)
 		return
 	}
 

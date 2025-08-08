@@ -101,6 +101,17 @@ func GetOrdersByCustomerId(customerID int) ([]types.Order , error){
     return orders, nil
 }
 
+func InsertOrderItemsDB(CustomerID int,productID int,quantity int) error {
+	query := "INSERT INTO OrderItems (customer_id , product_id , quantity) VALUES (? , ? , ?)"
+
+	_ , err := DB.Exec(query , CustomerID , productID , quantity)
+	if err !=nil{
+		fmt.Println("error inserting into the database", err)
+		return fmt.Errorf("error in database")
+	}
+	return nil
+}
+
 func InsertOrderItemDB(CustomerID int,productID int) error {
 	query := "INSERT INTO OrderItems (customer_id , product_id) VALUES (? , ?)"
 

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"net/mail"
 	"os"
 	"time"
 
@@ -26,4 +27,9 @@ func GenerateJWTToken(user types.User) (string , error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256 , claims)
 	
 	return token.SignedString([]byte(secret))
+}
+
+func IsValidEmail(email string) bool {
+    _, err := mail.ParseAddress(email)
+    return err == nil
 }

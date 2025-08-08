@@ -27,7 +27,7 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 		return
 	}
 
-	success , err := models.AddFoodDB(food)
+	success , status , err := models.AddFoodDB(food)
 	if err != nil {
 		fmt.Println("Could not log product")
 		toSend := types.Message{Message: err.Error()}
@@ -35,7 +35,7 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusInternalServerError)
+		http.Error(w, string(b), status)
 		return
 	}
 	if success {
@@ -45,8 +45,19 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusOK)
+		http.Error(w, string(b), status)
 		return
 	}
 
+}
+
+func GetAllProducts(w http.ResponseWriter , r *http.Request) {
+	products , err := models.GetProductsDB()
+	if err != nil {
+		fmt.Println("Error in getting the products from DB : " , err)
+		http.Error(w , err.Error() , http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(products)
 }
