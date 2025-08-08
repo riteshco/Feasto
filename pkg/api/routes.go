@@ -9,8 +9,7 @@ import (
 	"github.com/riteshco/Feasto/pkg/middleware"
 )
 
-
-func Run(){
+func SetupRouter() *mux.Router {
 	router := mux.NewRouter()
 
 
@@ -68,12 +67,13 @@ func Run(){
 	authRouter.HandleFunc("/delete-order/{id:[0-9]+}" , controllers.DeleteOrderAPI).Methods("POST")
 	
 	authRouter.HandleFunc("/payment-done/{id:[0-9]+}" , controllers.PaymentDoneAPI).Methods("POST")
+	
+	authRouter.HandleFunc("/cart/order", controllers.CartOrderAPI).Methods("POST")
 
 	// -- Chef specific action --
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
 	
 	// ---Needs Front-end---
-	// authRouter.HandleFunc("/cart/order", controllers.CartOrder).Methods("POST")
 	// authRouter.HandleFunc("/new-name/{id:[0-9]+}", controllers.NewProductName).Methods("POST")
 	// authRouter.HandleFunc("/new-price/{id:[0-9]+}", controllers.NewProductPrice).Methods("POST")
 	// ---------------------
@@ -83,11 +83,23 @@ func Run(){
 	
 	
 	authRouter.HandleFunc("/delete-user/{id:[0-9]+}" , controllers.DeleteUser).Methods("POST")
+
+	return router
+}
+
+func Run() {
+	router := SetupRouter()
+	fmt.Println("Listening on http://localhost:3000")
+	http.ListenAndServe(":3000", router)
+}
+
+
+// func Run(){
 	
 
-	fmt.Println("Listening on http://localhost:3000")
-	http.ListenAndServe(":3000" , router)
-}
+// 	fmt.Println("Listening on http://localhost:3000")
+// 	http.ListenAndServe(":3000" , router)
+// }
 
 func test_handler(w http.ResponseWriter , r * http.Request){
 	fmt.Fprintf(w , "Hello World!")

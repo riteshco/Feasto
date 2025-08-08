@@ -3,6 +3,7 @@ package utils
 import (
 	"net/mail"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -30,6 +31,18 @@ func GenerateJWTToken(user types.User) (string , error) {
 }
 
 func IsValidEmail(email string) bool {
-    _, err := mail.ParseAddress(email)
-    return err == nil
+	parsed, err := mail.ParseAddress(email)
+	if err != nil {
+		return false
+	}
+
+	addr := parsed.Address
+
+	at := strings.LastIndex(addr, "@")
+	if at < 0 {
+		return false
+	}
+	domain := addr[at+1:]
+
+	return strings.Contains(domain, ".") 
 }

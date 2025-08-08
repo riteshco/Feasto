@@ -1,11 +1,108 @@
 package models
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/riteshco/Feasto/pkg/types"
 )
+
+func CheckIfOrderLegit(CustomerID int) (int , []types.OrderItem , error) {
+	query := `SELECT * FROM OrderItems WHERE customer_id = ? AND order_id IS NULL`
+
+	rows, err := DB.Query(query , CustomerID)
+    if err != nil {
+        return http.StatusInternalServerError, nil , fmt.Errorf("error fetching orders: %v", err)
+    }
+    defer rows.Close()
+
+    var orderItems []types.OrderItem
+
+    for rows.Next() {
+        var oi types.OrderItem
+        if err := rows.Scan(&oi.Id, &oi.OrderId, &oi.CustomerId, &oi.ProductId, &oi.Quantity); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+			return http.StatusNotFound , nil ,fmt.Errorf("no Order/Cart items were found in DB with Customer ID : %d" , CustomerID)
+			}
+            return http.StatusInternalServerError, nil , fmt.Errorf("error scanning row: %v", err)
+        }
+        orderItems = append(orderItems, oi)
+    }
+
+    if err := rows.Err(); err != nil {
+        return http.StatusInternalServerError, nil , fmt.Errorf("error iterating rows: %v", err)
+    }
+	return http.StatusOK , orderItems , nil
+}
+
+func InsertUserOrderDB(CustomerID int , TableNumber int , Instructions string) (int , int , error) {
+	query := `INSERT INTO Orders (customer_id , table_number , instructions) VALUES ( ? , ? , ?)`
+	result , err := DB.Exec(query , CustomerID , TableNumber , Instructions)
+	if err != nil {
+		fmt.Println("error registering order in database:", err)
+		return http.StatusInternalServerError , 0 , fmt.Errorf("database update error")
+	}
+	orderIdInserted , err := result.LastInsertId()
+	if err != nil {
+		fmt.Println("error checking inserted rows:", err)
+		return http.StatusInternalServerError , 0 , fmt.Errorf("could not verify database update")
+	}
+
+	return http.StatusOK , int(orderIdInserted) , nil
+}
+
+func UpdateOrderItemsDB(CustomerID int , OrderID int) ( int , error ){
+	query := "UPDATE OrderItems SET order_id = ? WHERE customer_id = ? AND order_id IS NULL"
+	result , err := DB.Exec(query , OrderID , CustomerID)
+	if err != nil {
+		fmt.Println("error updating orderItems in database for current order:", err)
+		return http.StatusInternalServerError , fmt.Errorf("database update error")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no orderItems found for given order ID and customer ID to ipdate")
+	}
+
+	return http.StatusOK , nil
+}
+
+func GetPricesDB(OrderID int) ([]types.Prices, error) {
+	query := `
+            SELECT Products.price 
+            FROM OrderItems 
+            JOIN Products ON OrderItems.product_id = Products.id 
+            WHERE OrderItems.order_id = ?
+            `
+	rows, err := DB.Query(query , OrderID)
+    if err != nil {
+        return nil, fmt.Errorf("error fetching prices from Products: %v", err)
+    }
+    defer rows.Close()
+
+    var prices []types.Prices
+
+    for rows.Next() {
+        var p types.Prices
+        if err := rows.Scan(&p.Price); err != nil {
+            return nil, fmt.Errorf("error scanning row: %v", err)
+        }
+        prices = append(prices, p)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("error iterating rows: %v", err)
+    }
+
+    return prices, nil
+}
 
 func GetAllOrdersDB() ([]types.Order , error){
 	query := "SELECT * FROM Orders"

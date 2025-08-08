@@ -102,6 +102,7 @@ func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 	}
 	status , err := models.DeleteOrderDB(CustomerID , OrderId)
 	if err != nil {
+		fmt.Println("Error in deleting order in DB : " , err)
 		http.Error(w , err.Error() , status)
 		return
 	} else {
@@ -143,4 +144,58 @@ func GetPaymentThroughOrderAPI(w http.ResponseWriter , r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(payment)
 
+}
+
+func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
+	CustomerID := r.Context().Value("id").(int)
+
+	status , orderItems , err := models.CheckIfOrderLegit(CustomerID)
+	if err != nil {
+		fmt.Println("Error in ordering : " , err)
+		http.Error(w , err.Error() , status)
+		return
+	}
+
+	var order types.RegisterOrder
+
+	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+        http.Error(w, "Invalid JSON", http.StatusBadRequest)
+        return
+    }
+	TableNumber := order.TableNumber
+	Instructions := order.Instructions
+
+	status , OrderId , err := models.InsertUserOrderDB(CustomerID , TableNumber , Instructions)
+	if err != nil {
+		fmt.Println("Error in ordering : " , err)
+		http.Error(w , err.Error() , status)
+		return
+	} else {
+		status , err := models.UpdateOrderItemsDB(CustomerID , OrderId)
+		if err != nil {
+			fmt.Println("Error in ordering : " , err)
+			http.Error(w , err.Error() , status)
+			return
+		}
+		prices , err := models.GetPricesDB(OrderId)
+		if err != nil {
+			fmt.Println("Error in getting prices from DB : " , err)
+			http.Error(w , err.Error() , http.StatusInternalServerError)
+			return
+		}
+		var totalAmount float64
+        for i := range orderItems {
+    	productPrice := prices[i].Price
+    	quantity := orderItems[i].Quantity
+    	totalAmount += productPrice * float64(quantity)
+		}
+		status , err = models.InsertPaymentDB(CustomerID , OrderId , totalAmount)
+		if err != nil {
+			fmt.Println("Error in inserting payment in db : ", err)
+			http.Error(w , err.Error() , status)
+			return
+		}
+		http.Error(w , "Order registered Successfully!!" , status)
+	}
+	
 }

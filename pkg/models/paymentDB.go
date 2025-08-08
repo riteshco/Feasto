@@ -70,3 +70,16 @@ func PaymentStatusCompleteDB(CustomerID int , PaymentID int) (int , error) {
 
 	return http.StatusOK , nil
 }
+
+func InsertPaymentDB(CustomerID int , OrderID int , TotalAmount float64) (int , error){
+	query := `INSERT INTO Payments (user_id , order_id , Total_amount) VALUES (?,?,?)`
+	
+	_ , err := DB.Exec(query , CustomerID , OrderID , TotalAmount)
+    if err != nil {
+		fmt.Println("error registering payment in database:", err)
+		return http.StatusInternalServerError , fmt.Errorf("database update error")
+	}
+
+	return http.StatusOK , nil
+
+}

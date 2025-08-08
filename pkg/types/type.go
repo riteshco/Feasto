@@ -62,6 +62,18 @@ type Order struct {
 	Instructions string `json:"instructions"`
 }
 
+type OrderItem struct {
+	Id int `json:"id"`
+	OrderId sql.NullInt64 `json:"order_id"`
+	CustomerId int `json:"customer_id"`
+	ProductId int `json:"product_id"`
+	Quantity int `json:"quantity"`
+}
+
+type Prices struct {
+	Price float64 `json:"price"`
+}
+
 type Product struct {
 	Id int `json:"id"`
 	ProductName string `json:"product_name"`
@@ -88,4 +100,9 @@ type Payment struct {
 
 type Message struct {
 	Message string `json:"message"`
+}
+
+type RegisterOrder struct {
+	TableNumber int `json:"table_number"`
+	Instructions string `json:"instructions"`
 }
