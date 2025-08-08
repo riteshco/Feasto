@@ -1,4 +1,4 @@
-USE feasto;
+USE test_db;
 CREATE TABLE IF NOT EXISTS Users (
     id integer PRIMARY KEY AUTO_INCREMENT,
     username varchar(100) NOT NULL,
