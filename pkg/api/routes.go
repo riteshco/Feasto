@@ -24,7 +24,7 @@ func Run(){
 	router.HandleFunc("/auth" , controllers.AuthenticateUser).Methods("POST")
 	router.HandleFunc("/api/auth" , controllers.AuthenticateUserAPI).Methods("POST")
 
-	authRouter := router.PathPrefix("/").Subrouter()
+	authRouter := router.PathPrefix("/api").Subrouter()
 	authRouter.Use(middleware.JWTAuthMiddleware)
 	
 	//--Pages (For front end)--
@@ -39,38 +39,38 @@ func Run(){
 
 	authRouter.HandleFunc("/order/payment/{id:[0-9]+}", controllers.GetPaymentThroughOrderAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/api/all-products" , controllers.GetAllProducts).Methods("GET")
+	authRouter.HandleFunc("/all-products" , controllers.GetAllProducts).Methods("GET")
 	
-	authRouter.HandleFunc("/api/add-food" , controllers.AddFoodAPI).Methods("POST")
+	authRouter.HandleFunc("/add-food" , controllers.AddFoodAPI).Methods("POST")
 	
 	// -- Admin Actions --
-	authRouter.HandleFunc("/api/users/{id:[0-9]+}" , controllers.GetSingleUser).Methods("GET")
+	authRouter.HandleFunc("/users/{id:[0-9]+}" , controllers.GetSingleUser).Methods("GET")
 	
-	authRouter.HandleFunc("/api/all-payments" , controllers.GetAllPayments).Methods("GET")
+	authRouter.HandleFunc("/all-payments" , controllers.GetAllPayments).Methods("GET")
 	
-	authRouter.HandleFunc("/api/all-orders", controllers.GetAllOrders).Methods("GET")
+	authRouter.HandleFunc("/all-orders", controllers.GetAllOrders).Methods("GET")
 	
-	authRouter.HandleFunc("/api/users" , controllers.GetAllUsers).Methods("GET")
+	authRouter.HandleFunc("/users" , controllers.GetAllUsers).Methods("GET")
 	
-	authRouter.HandleFunc("/api/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("POST")
+	authRouter.HandleFunc("/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("POST")
 	
-	authRouter.HandleFunc("/api/gen-bill/{id:[0-9]+}" , controllers.GenBillAPI).Methods("POST")
+	authRouter.HandleFunc("/gen-bill/{id:[0-9]+}" , controllers.GenBillAPI).Methods("POST")
 	
 	// -- User actions --
-	authRouter.HandleFunc("/api/orders", controllers.UserOrders).Methods("GET")
+	authRouter.HandleFunc("/orders", controllers.UserOrders).Methods("GET")
 	
-	authRouter.HandleFunc("/api/add-one-to-cart/{id:[0-9]+}" , controllers.AddOneToCartAPI).Methods("POST")
+	authRouter.HandleFunc("/add-one-to-cart/{id:[0-9]+}" , controllers.AddOneToCartAPI).Methods("POST")
 
-	authRouter.HandleFunc("/api/add-to-cart/{id:[0-9]+}/{quantity:[0-9]+}" , controllers.AddToCartAPI).Methods("POST")
+	authRouter.HandleFunc("/add-to-cart/{id:[0-9]+}/{quantity:[0-9]+}" , controllers.AddToCartAPI).Methods("POST")
 	
-	authRouter.HandleFunc("/api/remove-from-cart/{id:[0-9]+}" , controllers.RemoveFromCartAPI).Methods("POST")
+	authRouter.HandleFunc("/remove-from-cart/{id:[0-9]+}" , controllers.RemoveFromCartAPI).Methods("POST")
 	
-	authRouter.HandleFunc("/api/delete-order/{id:[0-9]+}" , controllers.DeleteOrderAPI).Methods("POST")
+	authRouter.HandleFunc("/delete-order/{id:[0-9]+}" , controllers.DeleteOrderAPI).Methods("POST")
 	
-	authRouter.HandleFunc("/api/payment-done/{id:[0-9]+}" , controllers.PaymentDoneAPI).Methods("POST")
+	authRouter.HandleFunc("/payment-done/{id:[0-9]+}" , controllers.PaymentDoneAPI).Methods("POST")
 
 	// -- Chef specific action --
-	authRouter.HandleFunc("/api/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
+	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
 	
 	// ---Needs Front-end---
 	// authRouter.HandleFunc("/cart/order", controllers.CartOrder).Methods("POST")
@@ -79,10 +79,10 @@ func Run(){
 	// ---------------------
 	
 	
-	authRouter.HandleFunc("/api/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("POST")
+	authRouter.HandleFunc("/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("POST")
 	
 	
-	authRouter.HandleFunc("/api/delete-user/{id:[0-9]+}" , controllers.DeleteUser).Methods("POST")
+	authRouter.HandleFunc("/delete-user/{id:[0-9]+}" , controllers.DeleteUser).Methods("POST")
 	
 
 	fmt.Println("Listening on http://localhost:3000")
