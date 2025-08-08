@@ -33,9 +33,11 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	
-	dbUser , err := models.GetUserByEmail(r.Context() , email)
+	dbUser , status , err := models.GetUserByEmail(r.Context() , email)
 	if err != nil {
 		fmt.Printf("Error fetching user from DB for authentication : %v\n" , err)
+		http.Error(w , err.Error() , status)
+		return
 	} else if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -78,9 +80,11 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	}
 
 	
-	dbUser , err := models.GetUserByEmail(r.Context() , email)
+	dbUser , status , err := models.GetUserByEmail(r.Context() , email)
 	if err != nil {
-		fmt.Printf("Error fetching user from DB for authentication : %v" , err)
+		fmt.Printf("Error fetching user from DB for authentication : %v\n" , err)
+		http.Error(w , err.Error() , status)
+		return
 	} else if ! passwords.VerifyHashPassword(password , dbUser.HashedPassword) {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]interface{}{

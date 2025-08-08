@@ -11,7 +11,7 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func GetUserByEmail(ctx context.Context, email string) (types.User, error) {
+func GetUserByEmail(ctx context.Context, email string) (types.User, int , error) {
 	// short timeout for DB operations
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 
@@ -25,12 +25,12 @@ func GetUserByEmail(ctx context.Context, email string) (types.User, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 
-			return types.User{}, fmt.Errorf("user not found: %w", err)
+			return types.User{}, http.StatusNotFound , fmt.Errorf("user not found")
 		}
-		return types.User{}, fmt.Errorf("query user by email: %w", err)
+		return types.User{}, http.StatusInternalServerError , fmt.Errorf("error in fetching user from DB")
 	}
 
-	return user, nil
+	return user, http.StatusOK , nil
 }
 
 func DeleteUserDB(id int) error {

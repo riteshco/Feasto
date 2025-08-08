@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -39,7 +38,6 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
             }
             return []byte(secret), nil
         })
-		fmt.Println(err)
         if err != nil || !token.Valid {
             http.Error(w, "Invalid Token", http.StatusUnauthorized); return
         }

@@ -27,7 +27,7 @@ func Run(){
 	authRouter := router.PathPrefix("/").Subrouter()
 	authRouter.Use(middleware.JWTAuthMiddleware)
 	
-	//--Pages--
+	//--Pages (For front end)--
 	// authRouter.HandleFunc("/home", controllers.Homepage).Methods("GET")
 	// authRouter.HandleFunc("/add-food", controllers.AddFoodpage).Methods("GET")
 	// authRouter.HandleFunc("/admin", controllers.AdminPage).Methods("GET")
