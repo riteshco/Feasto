@@ -16,14 +16,10 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
         return
     }
 	
-	if food.ProductName == "" || food.Category =="" || food.Price <= 0 {
-		fmt.Println("All fields are required to register!")
-		toSend := types.Message{Message: "All fields are required to register!"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), http.StatusBadRequest)
+	if food.ProductName == "" || food.Category == "" || food.Price <= 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(types.Message{Message: "All fields (ProductName, Category, Price) are required and Price must be greater than 0"})
 		return
 	}
 
@@ -39,19 +35,14 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	if success {
-		fmt.Println("Product added successfully")
-		toSend := types.Message{Message: "Product added successfully"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Product Added Successfully!!"))
 		return
 	}
 
 }
 
-func GetAllProducts(w http.ResponseWriter , r *http.Request) {
+func GetAllProductsAPI(w http.ResponseWriter , r *http.Request) {
 	products , err := models.GetProductsDB()
 	if err != nil {
 		fmt.Println("Error in getting the products from DB : " , err)

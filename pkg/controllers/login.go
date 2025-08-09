@@ -24,7 +24,7 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 	password := user.Password
 
 	if username == "" || email=="" || password==""{
-		toSend := types.Message{Message: "All fields are required to login!"}
+		toSend := types.Message{Message: `All three :- "username" , "email" and "password" fields are required to be non-empty to login.`}
 		b, err := json.Marshal(toSend)
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
@@ -33,7 +33,7 @@ func AuthenticateUserAPI(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	
-	dbUser , status , err := models.GetUserByEmail(r.Context() , email)
+	dbUser , status , err := models.GetUserByEmailDB(r.Context() , email)
 	if err != nil {
 		fmt.Printf("Error fetching user from DB for authentication : %v\n" , err)
 		http.Error(w , err.Error() , status)
@@ -70,7 +70,7 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	password := r.PostFormValue("password")
 
 	if username == "" || email=="" || password==""{
-		toSend := types.Message{Message: "All fields are required to login!"}
+		toSend := types.Message{Message: `All three :- "username" , "email" and "password" fields are required to be non-empty to login.`}
 		b, err := json.Marshal(toSend)
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
@@ -80,7 +80,7 @@ func AuthenticateUser(w http.ResponseWriter , r *http.Request){
 	}
 
 	
-	dbUser , status , err := models.GetUserByEmail(r.Context() , email)
+	dbUser , status , err := models.GetUserByEmailDB(r.Context() , email)
 	if err != nil {
 		fmt.Printf("Error fetching user from DB for authentication : %v\n" , err)
 		http.Error(w , err.Error() , status)

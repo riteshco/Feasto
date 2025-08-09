@@ -33,15 +33,13 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		return
 	}
 
-	if username == "" || mobile_number== "" || email=="" || password==""{
-		fmt.Println("All fields are required to register!")
-		toSend := types.Message{Message: "All fields are required to register!"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), http.StatusBadRequest)
-		return
+	if username == "" || mobile_number == "" || email == "" || password == "" {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(types.Message{
+		Message: "All fields (username, mobile number, email, password) are required to register",
+	})
+	return
 	}
 
 	hashed_password := passwords.HashPassword(password)
@@ -54,7 +52,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		HashedPassword: hashed_password,
 	}
 
-	success , status , err := models.RegisterUser(register)
+	success , status , err := models.RegisterUserDB(register)
 	if err != nil {
 		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
@@ -66,18 +64,13 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	if success {
-		fmt.Println("User registered successfully")
-		toSend := types.Message{Message: "User registered successfully"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("User registered Successfully!!"))
 		return
 	}
 }
 
-func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
+func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
 	var user types.UserRegister
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -103,15 +96,13 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		return
 	}
 
-	if username == "" || mobile_number== "" || email=="" || password==""{
-		fmt.Println("All fields are required to register!")
-		toSend := types.Message{Message: "All fields are required to register!"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), http.StatusBadRequest)
-		return
+	if username == "" || mobile_number == "" || email == "" || password == "" {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(types.Message{
+		Message: "All fields (username, mobile number, email, password) are required to register",
+	})
+	return
 	}
 
 	hashed_password := passwords.HashPassword(password)
@@ -124,7 +115,7 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		HashedPassword: hashed_password,
 	}
 
-	success , status , err := models.RegisterUser(register)
+	success , status , err := models.RegisterUserDB(register)
 	if err != nil {
 		fmt.Printf("Could not log user")
 		toSend := types.Message{Message: err.Error()}
@@ -136,13 +127,8 @@ func RegisterAPIUser(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	if success {
-		fmt.Println("User registered successfully")
-		toSend := types.Message{Message: "User registered successfully"}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("User registered Successfully!!"))
 		return
 	}
 

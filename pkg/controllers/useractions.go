@@ -11,9 +11,9 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func UserOrders(w http.ResponseWriter , r *http.Request){
+func UserOrdersAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
-	orders , err := models.GetOrdersByCustomerId(CustomerID)
+	orders , err := models.GetOrdersByCustomerIdDB(CustomerID)
 	if err != nil {
 		toSend := types.Message{Message: err.Error()}
 		b, err := json.Marshal(toSend)
@@ -29,24 +29,6 @@ func UserOrders(w http.ResponseWriter , r *http.Request){
 
 }
 
-func AddOneToCartAPI(w http.ResponseWriter , r *http.Request){
-	vars := mux.Vars(r)
-	idStr := vars["id"]
-	productId, err := strconv.Atoi(idStr)
-	CustomerID := r.Context().Value("id").(int)
-	if err != nil {
-    	http.Error(w, "Invalid product ID", http.StatusBadRequest)
-    	return
-	}
-	err = models.InsertOrderItemDB(CustomerID , productId)
-	if err != nil {
-		http.Error(w , "Server Error" , http.StatusInternalServerError)
-		fmt.Println("Error in inserting orderItem by ID in DB : " , err)
-		return
-	} else {
-		http.Error(w , "Added to Cart successfully!!" , http.StatusOK)
-	}
-}
 
 func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 	vars := mux.Vars(r)
@@ -69,7 +51,8 @@ func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 		fmt.Println("Error in inserting orderItem by ID and quantity in DB : " , err)
 		return
 	} else {
-		http.Error(w , "Added to Cart successfully!!" , http.StatusOK)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Added to Cart Successfully!!"))
 	}
 }
 
@@ -88,7 +71,8 @@ func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 		fmt.Println("Error in removing OrderItem in DB : " , err)
 		return
 	} else {
-		http.Error(w , "Removed from Cart Successfully!!" , http.StatusOK)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Removed from Cart Successfully!!"))
 	}
 }
 
@@ -107,6 +91,8 @@ func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 		return
 	} else {
 		http.Error(w , "Deleted Order Successfully!!" , status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Deleted Order Successfully!!"))
 	}
 }
 
@@ -124,7 +110,8 @@ func PaymentDoneAPI(w http.ResponseWriter , r *http.Request) {
 		http.Error(w , err.Error() , status)
 		return
 	} else {
-		http.Error(w , "Payment Completed Successfully!!" , status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Payment Completed Successfully!!"))
 	}
 }
 
@@ -149,7 +136,7 @@ func GetPaymentThroughOrderAPI(w http.ResponseWriter , r *http.Request) {
 func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 	CustomerID := r.Context().Value("id").(int)
 
-	status , orderItems , err := models.CheckIfOrderLegit(CustomerID)
+	status , orderItems , err := models.CheckIfOrderLegitDB(CustomerID)
 	if err != nil {
 		fmt.Println("Error in ordering : " , err)
 		http.Error(w , err.Error() , status)
@@ -195,7 +182,8 @@ func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 			http.Error(w , err.Error() , status)
 			return
 		}
-		http.Error(w , "Order registered Successfully!!" , status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Order Registered Successfully!!"))
 	}
 	
 }

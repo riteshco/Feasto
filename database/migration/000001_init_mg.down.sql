@@ -1,3 +1,2 @@
 USE test_db;
 DROP TABLE IF EXISTS Users;
-DROP DATABASE IF EXISTS test_db;

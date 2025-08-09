@@ -13,7 +13,7 @@ import (
 )
 
 
-func DeleteUser(w http.ResponseWriter , r *http.Request){
+func DeleteUserAPI(w http.ResponseWriter , r *http.Request){
 	vars:= mux.Vars(r)
 	idStr := vars["id"]
 	id, err := strconv.Atoi(idStr)
@@ -78,7 +78,7 @@ func EditUserRoleAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
-func GetAllUsers(w http.ResponseWriter , r *http.Request) {
+func GetAllUsersAPI(w http.ResponseWriter , r *http.Request) {
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == "admin" {
 		users , err := models.GetAllUsersDB()
@@ -93,7 +93,7 @@ func GetAllUsers(w http.ResponseWriter , r *http.Request) {
 	}
 }
 
-func GetSingleUser(w http.ResponseWriter , r *http.Request) {
+func GetSingleUserAPI(w http.ResponseWriter , r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
 	id, err := strconv.Atoi(idStr)
@@ -115,7 +115,7 @@ func GetSingleUser(w http.ResponseWriter , r *http.Request) {
 	}
 }
 
-func GetAllOrders(w http.ResponseWriter , r *http.Request) {
+func GetAllOrdersAPI(w http.ResponseWriter , r *http.Request) {
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == "admin" {
 		orders , err := models.GetAllOrdersDB()
@@ -131,7 +131,7 @@ func GetAllOrders(w http.ResponseWriter , r *http.Request) {
 	}
 }
 
-func GetAllPayments(w http.ResponseWriter , r *http.Request) {
+func GetAllPaymentsAPI(w http.ResponseWriter , r *http.Request) {
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == "admin" {
 		payments , err := models.GetAllPaymentsDB()
@@ -160,7 +160,8 @@ func DeleteProductAPI(w http.ResponseWriter , r *http.Request) {
 		if err != nil {
 			http.Error(w , "Server Error" , http.StatusInternalServerError)
 		} else {
-			http.Error(w , "Product Deleted Successfully!!" , http.StatusOK)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Product Deleted Successfully!!"))
 		}
 	} else {
 		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
@@ -180,7 +181,8 @@ func GenBillAPI(w http.ResponseWriter , r *http.Request) {
 		if err != nil {
 			http.Error(w , err.Error() , statusCode)
 		} else {
-			http.Error(w , "Bill generated Successfully!" , statusCode)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Bill generated Successfully!!"))
 		}
 	} else {
 		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)

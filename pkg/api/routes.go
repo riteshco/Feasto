@@ -17,7 +17,7 @@ func SetupRouter() *mux.Router {
 
 	//--Registration--
 	router.HandleFunc("/register" , controllers.RegisterUser).Methods("POST")
-	router.HandleFunc("/api/register" , controllers.RegisterAPIUser).Methods("POST")
+	router.HandleFunc("/api/register" , controllers.RegisterUserAPI).Methods("POST")
 
 	//--authentication--
 	router.HandleFunc("/auth" , controllers.AuthenticateUser).Methods("POST")
@@ -38,33 +38,31 @@ func SetupRouter() *mux.Router {
 
 	authRouter.HandleFunc("/order/payment/{id:[0-9]+}", controllers.GetPaymentThroughOrderAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/all-products" , controllers.GetAllProducts).Methods("GET")
+	authRouter.HandleFunc("/all-products" , controllers.GetAllProductsAPI).Methods("GET")
 	
 	authRouter.HandleFunc("/add-food" , controllers.AddFoodAPI).Methods("POST")
 	
 	// -- Admin Actions --
-	authRouter.HandleFunc("/users/{id:[0-9]+}" , controllers.GetSingleUser).Methods("GET")
+	authRouter.HandleFunc("/users/{id:[0-9]+}" , controllers.GetSingleUserAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/all-payments" , controllers.GetAllPayments).Methods("GET")
+	authRouter.HandleFunc("/all-payments" , controllers.GetAllPaymentsAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/all-orders", controllers.GetAllOrders).Methods("GET")
+	authRouter.HandleFunc("/all-orders", controllers.GetAllOrdersAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/users" , controllers.GetAllUsers).Methods("GET")
+	authRouter.HandleFunc("/users" , controllers.GetAllUsersAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("POST")
+	authRouter.HandleFunc("/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("DELETE")
 	
 	authRouter.HandleFunc("/gen-bill/{id:[0-9]+}" , controllers.GenBillAPI).Methods("POST")
 	
 	// -- User actions --
-	authRouter.HandleFunc("/orders", controllers.UserOrders).Methods("GET")
-	
-	authRouter.HandleFunc("/add-one-to-cart/{id:[0-9]+}" , controllers.AddOneToCartAPI).Methods("POST")
+	authRouter.HandleFunc("/orders", controllers.UserOrdersAPI).Methods("GET")
 
 	authRouter.HandleFunc("/add-to-cart/{id:[0-9]+}/{quantity:[0-9]+}" , controllers.AddToCartAPI).Methods("POST")
 	
 	authRouter.HandleFunc("/remove-from-cart/{id:[0-9]+}" , controllers.RemoveFromCartAPI).Methods("POST")
 	
-	authRouter.HandleFunc("/delete-order/{id:[0-9]+}" , controllers.DeleteOrderAPI).Methods("POST")
+	authRouter.HandleFunc("/delete-order/{id:[0-9]+}" , controllers.DeleteOrderAPI).Methods("DELETE")
 	
 	authRouter.HandleFunc("/payment-done/{id:[0-9]+}" , controllers.PaymentDoneAPI).Methods("POST")
 	
@@ -74,15 +72,15 @@ func SetupRouter() *mux.Router {
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
 	
 	// ---Needs Front-end---
-	// authRouter.HandleFunc("/new-name/{id:[0-9]+}", controllers.NewProductName).Methods("POST")
-	// authRouter.HandleFunc("/new-price/{id:[0-9]+}", controllers.NewProductPrice).Methods("POST")
+	// authRouter.HandleFunc("/new-name/{id:[0-9]+}", controllers.NewProductNameAPI).Methods("POST")
+	// authRouter.HandleFunc("/new-price/{id:[0-9]+}", controllers.NewProductPriceAPI).Methods("POST")
 	// ---------------------
 	
 	
-	authRouter.HandleFunc("/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("POST")
+	authRouter.HandleFunc("/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("PATCH")
 	
 	
-	authRouter.HandleFunc("/delete-user/{id:[0-9]+}" , controllers.DeleteUser).Methods("POST")
+	authRouter.HandleFunc("/delete-user/{id:[0-9]+}" , controllers.DeleteUserAPI).Methods("DELETE")
 
 	return router
 }

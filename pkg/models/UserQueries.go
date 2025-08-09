@@ -11,7 +11,7 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func GetUserByEmail(ctx context.Context, email string) (types.User, int , error) {
+func GetUserByEmailDB(ctx context.Context, email string) (types.User, int , error) {
 	// short timeout for DB operations
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 

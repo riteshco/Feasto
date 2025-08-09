@@ -8,7 +8,7 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func RegisterUser(user types.UserRegisterDB) (bool , int , error) {
+func RegisterUserDB(user types.UserRegisterDB) (bool , int , error) {
 
 
 	InsertUser := "INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES (? , ? , ? , ? , ?)"

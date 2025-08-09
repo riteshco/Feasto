@@ -9,7 +9,7 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func CheckIfOrderLegit(CustomerID int) (int , []types.OrderItem , error) {
+func CheckIfOrderLegitDB(CustomerID int) (int , []types.OrderItem , error) {
 	query := `SELECT * FROM OrderItems WHERE customer_id = ? AND order_id IS NULL`
 
 	rows, err := DB.Query(query , CustomerID)
@@ -172,7 +172,7 @@ func CompleteOrderDB(OrderID int) (int , error) {
 	return http.StatusOK , nil
 }
 
-func GetOrdersByCustomerId(customerID int) ([]types.Order , error){
+func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , error){
 	query := "SELECT * FROM Orders Where customer_id = ?"
 	
 	rows, err := DB.Query(query , customerID)
@@ -209,16 +209,6 @@ func InsertOrderItemsDB(CustomerID int,productID int,quantity int) error {
 	return nil
 }
 
-func InsertOrderItemDB(CustomerID int,productID int) error {
-	query := "INSERT INTO OrderItems (customer_id , product_id) VALUES (? , ?)"
-
-	_ , err := DB.Exec(query , CustomerID , productID)
-	if err !=nil{
-		fmt.Println("error inserting into the database", err)
-		return fmt.Errorf("error in database")
-	}
-	return nil
-}
 
 func RemoveOrderItemDB(customerID int, ItemID int) error {
 	query := "DELETE FROM OrderItems WHERE customer_id = ? AND id = ? AND order_id IS NULL"

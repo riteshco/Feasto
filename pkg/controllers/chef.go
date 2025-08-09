@@ -23,7 +23,8 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 			http.Error(w , err.Error() , status)
 			return
 		}
-		http.Error(w , "Order Completed Successfully!" , status)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Order Completed Successfully!!"))
 	} else {
 		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
 		return
