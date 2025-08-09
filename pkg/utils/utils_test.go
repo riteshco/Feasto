@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/riteshco/Feasto/pkg/constants"
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
@@ -38,7 +39,7 @@ func TestGenerateJWTToken(t *testing.T) {
 		Id:       123,
 		Username: "testuser",
 		Email:    "test@example.com",
-		UserRole: "admin",
+		UserRole: constants.RoleAdmin,
 	}
 
 	tokenString, err := GenerateJWTToken(user)

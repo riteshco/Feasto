@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/riteshco/Feasto/pkg/constants"
 	"github.com/riteshco/Feasto/pkg/models"
 )
 
@@ -17,7 +18,7 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 		return
 	}
 	UserRole := r.Context().Value("user_role").(string)
-	if UserRole == "chef" {
+	if UserRole == constants.RoleChef {
 		status , err := models.CompleteOrderDB(OrderId)
 		if err != nil {
 			http.Error(w , err.Error() , status)

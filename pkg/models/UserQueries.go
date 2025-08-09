@@ -33,54 +33,54 @@ func GetUserByEmailDB(ctx context.Context, email string) (types.User, int , erro
 	return user, http.StatusOK , nil
 }
 
-func DeleteUserDB(id int) error {
+func DeleteUserDB(id int) (int , error ) {
 
 	query := "DELETE FROM Users WHERE id = ?"
 
 	result, err := DB.Exec(query, id)
     if err != nil {
-        return fmt.Errorf("error deleting user: %v", err)
+        return http.StatusInternalServerError , fmt.Errorf("error deleting user: %v", err)
     }
 
     rowsAffected, err := result.RowsAffected()
     if err != nil {
-        return fmt.Errorf("error fetching rows affected: %v", err)
+        return http.StatusInternalServerError , fmt.Errorf("error fetching rows affected: %v", err)
     }
 
     if rowsAffected == 0 {
-        return fmt.Errorf("no user found with ID %d", id)
+        return http.StatusNotFound , fmt.Errorf("no user found with ID %d", id)
     }
 
-    return nil
+    return http.StatusOK , nil
 
 }
 
-func EditUserRoleDB(newRole string , id int) error {
+func EditUserRoleDB(newRole string , id int) (int , error) {
 	query := "UPDATE Users SET user_role = ? WHERE id = ?"
 
 	result , err := DB.Exec(query, newRole , id)
 	if err != nil {
-        return fmt.Errorf("error changing user role: %v", err)
+        return http.StatusInternalServerError , fmt.Errorf("error changing user role: %v", err)
     }
 
     rowsAffected, err := result.RowsAffected()
     if err != nil {
-        return fmt.Errorf("error fetching rows affected: %v", err)
+        return http.StatusInternalServerError , fmt.Errorf("error fetching rows affected: %v", err)
     }
 
     if rowsAffected == 0 {
-        return fmt.Errorf("no user found with ID %d", id)
+        return http.StatusNotFound , fmt.Errorf("no user found with ID %d", id)
     }
 
-	return nil
+	return http.StatusOK , nil
 }
 
-func GetAllUsersDB() ([]types.User , error) {
+func GetAllUsersDB() ([]types.User , int , error) {
 	query := "SELECT * FROM Users"
 
 	rows, err := DB.Query(query)
     if err != nil {
-        return nil, fmt.Errorf("error fetching users: %v", err)
+        return nil , http.StatusInternalServerError , fmt.Errorf("error fetching users: %v", err)
     }
     defer rows.Close()
 
@@ -89,16 +89,16 @@ func GetAllUsersDB() ([]types.User , error) {
     for rows.Next() {
         var u types.User
         if err := rows.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
         }
         users = append(users, u)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return users, nil
+    return users, http.StatusOK ,nil
 }
 
 func GetSingleUserDB(id int) (types.User , int , error) {

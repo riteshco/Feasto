@@ -43,10 +43,10 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 }
 
 func GetAllProductsAPI(w http.ResponseWriter , r *http.Request) {
-	products , err := models.GetProductsDB()
+	products, status , err := models.GetProductsDB()
 	if err != nil {
 		fmt.Println("Error in getting the products from DB : " , err)
-		http.Error(w , err.Error() , http.StatusInternalServerError)
+		http.Error(w , err.Error() , status)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

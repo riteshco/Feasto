@@ -74,7 +74,7 @@ func UpdateOrderItemsDB(CustomerID int , OrderID int) ( int , error ){
 	return http.StatusOK , nil
 }
 
-func GetPricesDB(OrderID int) ([]types.Prices, error) {
+func GetPricesDB(OrderID int) ([]types.Prices, int , error) {
 	query := `
             SELECT Products.price 
             FROM OrderItems 
@@ -83,7 +83,7 @@ func GetPricesDB(OrderID int) ([]types.Prices, error) {
             `
 	rows, err := DB.Query(query , OrderID)
     if err != nil {
-        return nil, fmt.Errorf("error fetching prices from Products: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error fetching prices from Products: %v", err)
     }
     defer rows.Close()
 
@@ -92,24 +92,24 @@ func GetPricesDB(OrderID int) ([]types.Prices, error) {
     for rows.Next() {
         var p types.Prices
         if err := rows.Scan(&p.Price); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
         }
         prices = append(prices, p)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return prices, nil
+    return prices, http.StatusOK ,nil
 }
 
-func GetAllOrdersDB() ([]types.Order , error){
+func GetAllOrdersDB() ([]types.Order , int , error){
 	query := "SELECT * FROM Orders"
 	
 	rows, err := DB.Query(query)
     if err != nil {
-        return nil, fmt.Errorf("error fetching orders: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error fetching orders: %v", err)
     }
     defer rows.Close()
 
@@ -118,16 +118,16 @@ func GetAllOrdersDB() ([]types.Order , error){
     for rows.Next() {
         var o types.Order
         if err := rows.Scan(&o.Id, &o.CreatedAt, &o.CurrentStatus, &o.CustomerId, &o.ChefId, &o.TableNumber , &o.Instructions); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
         }
         orders = append(orders, o)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return orders, nil
+    return orders,http.StatusOK , nil
 }
 
 func DeleteOrderDB(customerID int , OrderID int) (int , error) {
@@ -172,12 +172,12 @@ func CompleteOrderDB(OrderID int) (int , error) {
 	return http.StatusOK , nil
 }
 
-func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , error){
+func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , int , error){
 	query := "SELECT * FROM Orders Where customer_id = ?"
 	
 	rows, err := DB.Query(query , customerID)
     if err != nil {
-        return nil, fmt.Errorf("error fetching orders: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error fetching orders: %v", err)
     }
     defer rows.Close()
 
@@ -186,38 +186,38 @@ func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , error){
     for rows.Next() {
         var o types.Order
         if err := rows.Scan(&o.Id, &o.CreatedAt, &o.CurrentStatus, &o.CustomerId, &o.ChefId, &o.TableNumber , &o.Instructions); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
         }
         orders = append(orders, o)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return orders, nil
+    return orders, http.StatusOK , nil
 }
 
-func InsertOrderItemsDB(CustomerID int,productID int,quantity int) error {
+func InsertOrderItemsDB(CustomerID int,productID int,quantity int) (int , error) {
 	query := "INSERT INTO OrderItems (customer_id , product_id , quantity) VALUES (? , ? , ?)"
 
 	_ , err := DB.Exec(query , CustomerID , productID , quantity)
 	if err !=nil{
 		fmt.Println("error inserting into the database", err)
-		return fmt.Errorf("error in database")
+		return http.StatusInternalServerError , fmt.Errorf("error in database")
 	}
-	return nil
+	return http.StatusOK , nil
 }
 
 
-func RemoveOrderItemDB(customerID int, ItemID int) error {
+func RemoveOrderItemDB(customerID int, ItemID int) (int ,error) {
 	query := "DELETE FROM OrderItems WHERE customer_id = ? AND id = ? AND order_id IS NULL"
 	_, err := DB.Exec(query, customerID, ItemID)
 	if err != nil {
 		fmt.Println("error deleting order item from database:", err)
-		return fmt.Errorf("error in database")
+		return http.StatusInternalServerError , fmt.Errorf("error in database")
 	}
-	return nil
+	return http.StatusOK , nil
 }
 
 func AcceptOrderDB(paymentID int) (int , error) {

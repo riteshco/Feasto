@@ -9,12 +9,12 @@ import (
 	"github.com/riteshco/Feasto/pkg/types"
 )
 
-func GetAllPaymentsDB() ([]types.Payment , error){
+func GetAllPaymentsDB() ([]types.Payment , int , error){
 	query := "SELECT * FROM Payments"
 	
 	rows, err := DB.Query(query)
     if err != nil {
-        return nil, fmt.Errorf("error fetching payments: %v", err)
+        return nil , http.StatusInternalServerError , fmt.Errorf("error fetching payments: %v", err)
     }
     defer rows.Close()
 
@@ -23,16 +23,16 @@ func GetAllPaymentsDB() ([]types.Payment , error){
     for rows.Next() {
         var p types.Payment
         if err := rows.Scan(&p.Id, &p.UserId, &p.OrderId, &p.TotalPayment, &p.PaymentStatus); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil,http.StatusInternalServerError, fmt.Errorf("error scanning row: %v", err)
         }
         payments = append(payments, p)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil,http.StatusInternalServerError, fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return payments, nil
+    return payments,http.StatusOK, nil
 }
 
 func GetPaymentThroughOrderDB(OrderID int , CustomerID int) (types.Payment , int , error) {

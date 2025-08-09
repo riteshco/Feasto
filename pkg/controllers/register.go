@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/riteshco/Feasto/pkg/constants"
 	"github.com/riteshco/Feasto/pkg/controllers/passwords"
 	"github.com/riteshco/Feasto/pkg/models"
 	"github.com/riteshco/Feasto/pkg/types"
@@ -27,7 +28,7 @@ func validateSignupRequest (user  types.UserRegister ) error {
 	}
 	user.Username = strings.TrimSpace(user.Username)
 	check_username := strings.ToLower(user.Username)
-	if check_username == "admin" || check_username == "chef" {
+	if check_username == constants.RoleAdmin || check_username == constants.RoleChef {
 		fmt.Println("Tried to put admin or chef as username!")
 		return fmt.Errorf("this username is not allowed")
 	}
@@ -65,7 +66,7 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 		Username: username,
 		MobileNumber: mobile_number,
 		Email: email,
-		UserRole: "customer",
+		UserRole: constants.RoleCustomer,
 		HashedPassword: hashed_password,
 	}
 
@@ -112,7 +113,7 @@ func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
 		Username: username,
 		MobileNumber: mobile_number,
 		Email: email,
-		UserRole: "customer",
+		UserRole: constants.RoleCustomer,
 		HashedPassword: hashed_password,
 	}
 

@@ -25,22 +25,22 @@ func AddFoodDB(food types.FoodToAdd) (bool , int , error){
 	}
 }
 
-func DeleteProductDB(productID int) error {
+func DeleteProductDB(productID int) (int ,error) {
 	query := "DELETE FROM Products WHERE id = ?"
 	_ , err := DB.Exec(query , productID)
 	if err != nil {
 		fmt.Println("error deleting product from database:", err)
-		return fmt.Errorf("error in database")
+		return http.StatusInternalServerError , fmt.Errorf("error in database")
 	}
-	return nil
+	return http.StatusOK , nil
 }
 
-func GetProductsDB() ( []types.Product , error) {
+func GetProductsDB() ( []types.Product , int , error) {
 	query := `SELECT * FROM Products`
 	
 	rows, err := DB.Query(query)
     if err != nil {
-        return nil, fmt.Errorf("error fetching products: %v", err)
+        return nil,http.StatusInternalServerError , fmt.Errorf("error fetching products: %v", err)
     }
     defer rows.Close()
 
@@ -49,14 +49,14 @@ func GetProductsDB() ( []types.Product , error) {
     for rows.Next() {
         var p types.Product
         if err := rows.Scan(&p.Id, &p.ProductName, &p.IsAvailable, &p.Price, &p.Category, &p.ImageUrl); err != nil {
-            return nil, fmt.Errorf("error scanning row: %v", err)
+            return nil, http.StatusInternalServerError, fmt.Errorf("error scanning row: %v", err)
         }
         orders = append(orders, p)
     }
 
     if err := rows.Err(); err != nil {
-        return nil, fmt.Errorf("error iterating rows: %v", err)
+        return nil,http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return orders, nil
+    return orders , http.StatusOK, nil
 }

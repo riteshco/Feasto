@@ -13,14 +13,14 @@ import (
 
 func UserOrdersAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
-	orders , err := models.GetOrdersByCustomerIdDB(CustomerID)
+	orders ,status , err := models.GetOrdersByCustomerIdDB(CustomerID)
 	if err != nil {
 		toSend := types.Message{Message: err.Error()}
 		b, err := json.Marshal(toSend)
 		if err != nil {
 			fmt.Println(err, "could not marshal message")
 		}
-		http.Error(w, string(b), http.StatusInternalServerError)
+		http.Error(w, string(b), status)
 		fmt.Println("Error in getting orders from Database : " , err)
 		return
 	}
@@ -45,13 +45,13 @@ func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w, "Invalid quantity", http.StatusBadRequest)
 		return
 	}
-	err = models.InsertOrderItemsDB(CustomerID , productId , quantity)
+	status , err := models.InsertOrderItemsDB(CustomerID , productId , quantity)
 	if err != nil {
-		http.Error(w , "Server Error" , http.StatusInternalServerError)
+		http.Error(w , "Server Error" , status)
 		fmt.Println("Error in inserting orderItem by ID and quantity in DB : " , err)
 		return
 	} else {
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(status)
 		w.Write([]byte("Added to Cart Successfully!!"))
 	}
 }
@@ -65,13 +65,13 @@ func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w , "Invalid Item ID", http.StatusBadRequest)
 		return
 	}
-	err = models.RemoveOrderItemDB(CustomerID , ItemId)
+	status , err := models.RemoveOrderItemDB(CustomerID , ItemId)
 	if err != nil {
-		http.Error(w , "Server Error" , http.StatusInternalServerError)
+		http.Error(w , "Server Error" , status)
 		fmt.Println("Error in removing OrderItem in DB : " , err)
 		return
 	} else {
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(status)
 		w.Write([]byte("Removed from Cart Successfully!!"))
 	}
 }
@@ -83,6 +83,7 @@ func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 	CustomerID := r.Context().Value("id").(int)
 	if err != nil {
 		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+		return
 	}
 	status , err := models.DeleteOrderDB(CustomerID , OrderId)
 	if err != nil {
@@ -90,7 +91,6 @@ func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 		http.Error(w , err.Error() , status)
 		return
 	} else {
-		http.Error(w , "Deleted Order Successfully!!" , status)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Deleted Order Successfully!!"))
 	}
@@ -103,6 +103,7 @@ func PaymentDoneAPI(w http.ResponseWriter , r *http.Request) {
 	CustomerID := r.Context().Value("id").(int)
 	if err != nil {
 		http.Error(w , "Invalid Payment ID" , http.StatusBadRequest)
+		return
 	}
 	status , err := models.PaymentStatusCompleteDB(CustomerID , PaymentId)
 	if err != nil {
@@ -122,11 +123,13 @@ func GetPaymentThroughOrderAPI(w http.ResponseWriter , r *http.Request) {
 	CustomerID := r.Context().Value("id").(int)
 	if err != nil {
 		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+		return
 	}
 	payment , status , err := models.GetPaymentThroughOrderDB(OrderId , CustomerID)
 	if err != nil {
 		fmt.Println("Error in getting payment through order id : " , err)
 		http.Error(w , err.Error() , status)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(payment)
@@ -164,10 +167,10 @@ func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 			http.Error(w , err.Error() , status)
 			return
 		}
-		prices , err := models.GetPricesDB(OrderId)
+		prices, status , err := models.GetPricesDB(OrderId)
 		if err != nil {
 			fmt.Println("Error in getting prices from DB : " , err)
-			http.Error(w , err.Error() , http.StatusInternalServerError)
+			http.Error(w , err.Error() , status)
 			return
 		}
 		var totalAmount float64

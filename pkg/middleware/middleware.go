@@ -39,7 +39,8 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
             return []byte(secret), nil
         })
         if err != nil || !token.Valid {
-            http.Error(w, "Invalid Token", http.StatusUnauthorized); return
+            http.Error(w, "Invalid Token", http.StatusUnauthorized)
+			return
         }
 
 
