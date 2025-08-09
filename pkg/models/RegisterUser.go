@@ -9,8 +9,6 @@ import (
 )
 
 func RegisterUserDB(user types.UserRegisterDB) (bool , int , error) {
-
-
 	InsertUser := "INSERT INTO Users (username , mobile_number , email , user_role , password_hash) VALUES (? , ? , ? , ? , ?)"
 	_ , err := DB.Exec(InsertUser , user.Username , user.MobileNumber , user.Email , user.UserRole , user.HashedPassword)
 	if err != nil {
