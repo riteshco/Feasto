@@ -12,6 +12,33 @@ import (
 	"github.com/riteshco/Feasto/pkg/utils"
 )
 
+func validateSignupRequest (user  types.UserRegister ) error {
+	if user.Username == "" || user.MobileNumber == "" || user.Email == "" || user.Password == "" {
+		return fmt.Errorf("all fields (username, mobile number, email, password) are required to register")
+	}
+	if len(user.MobileNumber) != 10 {
+		return fmt.Errorf("length of mobile_number should be equal to 10")
+	}
+	if len(user.Username) > 12 {
+		return fmt.Errorf("username length should be less than equal to 12")
+	}
+	if len(user.Password) < 6 || len(user.Password) > 20 {
+		return fmt.Errorf("length of password should be between 6 to 20")
+	}
+	user.Username = strings.TrimSpace(user.Username)
+	check_username := strings.ToLower(user.Username)
+	if check_username == "admin" || check_username == "chef" {
+		fmt.Println("Tried to put admin or chef as username!")
+		return fmt.Errorf("this username is not allowed")
+	}
+	if ! utils.IsValidEmail(user.Email) {
+		fmt.Println("Didn't enter a valid email!")
+		return fmt.Errorf("please enter a valid email")
+	}
+
+	return nil
+}
+
 
 func RegisterUser(w http.ResponseWriter , r *http.Request){
 	username := r.PostFormValue("username")
@@ -19,28 +46,18 @@ func RegisterUser(w http.ResponseWriter , r *http.Request){
 	email := r.PostFormValue("email")
 	password := r.PostFormValue("password")
 
-	username = strings.TrimSpace(username)
-	check_username := strings.ToLower(username)
-	if check_username == "admin" || check_username == "chef" {
-		fmt.Println("Tried to put admin or chef as username!")
-		http.Error(w , "This username is not allowed!" , http.StatusBadRequest)
-		return
+	user := types.UserRegister{
+		Username: username,
+		MobileNumber: mobile_number,
+		Email: email,
+		Password: password,
 	}
 
-	if ! utils.IsValidEmail(email) {
-		fmt.Println("Didn't enter a valid email!")
-		http.Error(w , "Please enter a valid email!" , http.StatusBadRequest)
+	err := validateSignupRequest(user)
+	if err != nil {
+		http.Error(w , err.Error() , http.StatusBadRequest)
 		return
-	}
-
-	if username == "" || mobile_number == "" || email == "" || password == "" {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(types.Message{
-		Message: "All fields (username, mobile number, email, password) are required to register",
-	})
-	return
-	}
+	} 
 
 	hashed_password := passwords.HashPassword(password)
 
@@ -77,33 +94,17 @@ func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
         http.Error(w, "Invalid JSON", http.StatusBadRequest)
         return
     }
+
+	err := validateSignupRequest(user)
+	if err != nil {
+		http.Error(w , err.Error() , http.StatusBadRequest)
+		return
+	} 
+
 	username := user.Username
 	mobile_number := user.MobileNumber
 	email := user.Email
 	password := user.Password
-
-	username = strings.TrimSpace(username)
-	check_username := strings.ToLower(username)
-	if check_username == "admin" || check_username == "chef" {
-		fmt.Println("Tried to put admin or chef as username!")
-		http.Error(w , "This username is not allowed!" , http.StatusBadRequest)
-		return
-	}
-
-	if ! utils.IsValidEmail(email) {
-		fmt.Println("Didn't enter a valid email!")
-		http.Error(w , "Please enter a valid email!" , http.StatusBadRequest)
-		return
-	}
-
-	if username == "" || mobile_number == "" || email == "" || password == "" {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(types.Message{
-		Message: "All fields (username, mobile number, email, password) are required to register",
-	})
-	return
-	}
 
 	hashed_password := passwords.HashPassword(password)
 
