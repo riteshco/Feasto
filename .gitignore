@@ -1,0 +1,28 @@
+Feasto_backend/.env
+Feasto_backend/tmp/
+
+
+# Logs
+Feasto_frontend/logs
+Feasto_frontend/*.log
+Feasto_frontend/npm-debug.log*
+Feasto_frontend/yarn-debug.log*
+Feasto_frontend/yarn-error.log*
+Feasto_frontend/pnpm-debug.log*
+Feasto_frontend/lerna-debug.log*
+
+Feasto_frontend/node_modules
+Feasto_frontend/dist
+Feasto_frontend/dist-ssr
+Feasto_frontend/*.local
+
+# Editor directories and files
+Feasto_frontend/.vscode/*
+Feasto_frontend/!.vscode/extensions.json
+Feasto_frontend/.idea
+Feasto_frontend/.DS_Store
+Feasto_frontend/*.suo
+Feasto_frontend/*.ntvs*
+Feasto_frontend/*.njsproj
+Feasto_frontend/*.sln
+Feasto_frontend/*.sw?
