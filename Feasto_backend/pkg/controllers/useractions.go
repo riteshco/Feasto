@@ -56,6 +56,32 @@ func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
+func GetCartItemsAPI(w http.ResponseWriter , r *http.Request){
+	CustomerID := r.Context().Value("id").(int)
+	orderItems , status , err := models.GetCartOrderItemsDB(CustomerID)
+	if err != nil {
+		http.Error(w , "Server Error" , status)
+		fmt.Println("Error in getting OrderItem in DB : " , err)
+		return
+	}
+	productItems , status , err := models.GetCartProductItemsDB(CustomerID)
+	if err != nil {
+		http.Error(w , "Server Error" , status)
+		fmt.Println("Error in getting ProductItems in DB : " , err)
+		return
+	}
+	response := struct {
+        Orders   interface{} `json:"orders"`
+        Products interface{} `json:"products"`
+    }{
+        Orders:   orderItems,
+        Products: productItems,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
 func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 	vars := mux.Vars(r)
 	idStr := vars["id"]

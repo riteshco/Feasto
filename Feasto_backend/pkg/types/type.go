@@ -83,6 +83,12 @@ type Product struct {
 	ImageUrl sql.NullString `json:"image_url"`
 }
 
+type CartItem struct {
+	Id int `json:"id"`
+	ProductName string `json:"product_name"`
+	Quantity int `json:"quantity"`
+}
+
 type FoodToAdd struct {
 	ProductName string `json:"product_name"`
 	Price float64 `json:"price"`

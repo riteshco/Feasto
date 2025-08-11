@@ -198,6 +198,56 @@ func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , int , error){
     return orders, http.StatusOK , nil
 }
 
+func GetCartOrderItemsDB(CustomerID int) ([]types.OrderItem , int , error) {
+	query := "SELECT * FROM OrderItems WHERE customer_id = ? AND order_id IS NULL"
+	rows , err := DB.Query(query , CustomerID)
+	if err != nil {
+        return nil , http.StatusInternalServerError , fmt.Errorf("error fetching orderItems: %v", err)
+    }
+    defer rows.Close()
+
+    var orderItems []types.OrderItem
+
+    for rows.Next() {
+        var o types.OrderItem
+        if err := rows.Scan(&o.Id, &o.OrderId, &o.CustomerId, &o.ProductId, &o.Quantity); err != nil {
+            return nil ,  http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
+        }
+        orderItems = append(orderItems, o)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
+    }
+
+	return orderItems , http.StatusOK , nil
+}
+
+func GetCartProductItemsDB(CustomerID int) ([]types.Product , int , error) {
+	query := "SELECT id , product_name , price FROM Products WHERE id IN (SELECT product_id FROM OrderItems WHERE customer_id = ? AND order_id IS NULL)"
+	rows , err := DB.Query(query , CustomerID)
+	if err != nil {
+        return nil , http.StatusInternalServerError , fmt.Errorf("error fetching cartProducts: %v", err)
+    }
+    defer rows.Close()
+
+    var cartProducts []types.Product
+
+    for rows.Next() {
+        var o types.Product
+        if err := rows.Scan(&o.Id, &o.ProductName , &o.Price); err != nil {
+            return nil ,  http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
+        }
+        cartProducts = append(cartProducts, o)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
+    }
+
+	return cartProducts , http.StatusOK , nil
+}
+
 func InsertOrderItemsDB(CustomerID int,productID int,quantity int) (int , error) {
 	query := "INSERT INTO OrderItems (customer_id , product_id , quantity) VALUES (? , ? , ?)"
 

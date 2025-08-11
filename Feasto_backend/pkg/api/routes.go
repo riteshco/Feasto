@@ -28,11 +28,9 @@ func SetupRouter() *mux.Router {
 	authRouter.Use(middleware.JWTAuthMiddleware)
 	
 	//--Pages (For front end)--
-	// authRouter.HandleFunc("/home", controllers.Homepage).Methods("GET")
 	// authRouter.HandleFunc("/add-food", controllers.AddFoodpage).Methods("GET")
 	// authRouter.HandleFunc("/admin", controllers.AdminPage).Methods("GET")
 	// authRouter.HandleFunc("/cart", controllers.CartPage).Methods("GET")
-	// authRouter.HandleFunc("/categories", controllers.CategoriesPage).Methods("GET")
 	// authRouter.HandleFunc("/past-orders", controllers.PastOrdersPage).Methods("GET")
 	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
 	// authRouter.HandleFunc("/order/items/{id:[0-9]+}", controllers.OrderItemsPage).Methods("GET")
@@ -68,6 +66,8 @@ func SetupRouter() *mux.Router {
 	authRouter.HandleFunc("/payment-done/{id:[0-9]+}" , controllers.PaymentDoneAPI).Methods("POST")
 	
 	authRouter.HandleFunc("/cart/order", controllers.CartOrderAPI).Methods("POST")
+
+	authRouter.HandleFunc("/cartItems", controllers.GetCartItemsAPI).Methods("GET")
 
 	// -- Chef specific action --
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
