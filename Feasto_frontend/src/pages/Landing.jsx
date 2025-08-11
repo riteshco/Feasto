@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar"
-import { AppWindowIcon, CodeIcon } from "lucide-react"
-
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { loginUser , setCookie} from "@/api/auth"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -18,8 +19,31 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import { getUserFromToken } from "@/utils/auth"
 
 export function Landing() {
+    const user = getUserFromToken()
+    if(user) {
+        return <Navigate to="/home" replace />;
+    }
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email   , setEmail]    = useState("");
+    const navigate = useNavigate();
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        try {
+        const data = await loginUser({ username, email , password });
+        console.log("Logged in:", data);
+        await setCookie("auth_token",data.token);
+        navigate("/home");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     return (
         <>
             <Navbar page="Landing" />
@@ -68,23 +92,25 @@ export function Landing() {
                                     Login to your account on Feasto.
                                 </CardDescription>
                             </CardHeader>
+                                <form onSubmit={handleSubmit}>
                             <CardContent className="grid gap-6">
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-name">Username:</Label>
-                                    <Input id="tabs-demo-name" placeholder="Your username goes here..." />
+                                    <Input value={username} onChange={(e) => setUsername(e.target.value)} id="tabs-demo-name" placeholder="Your username goes here..." />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Email</Label>
-                                    <Input id="tabs-demo-username" placeholder="example@example.com" />
+                                    <Input value={email} type="email" onChange={(e) => setEmail(e.target.value)} id="tabs-demo-username" placeholder="example@example.com" />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Password</Label>
-                                    <Input id="tabs-demo-username" placeholder="***********...." />
+                                    <Input value={password} type="password" onChange={(e) => setPassword(e.target.value)} id="tabs-demo-username" placeholder="***********...." />
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button>Login</Button>
+                                <Button type="submit">Login</Button>
                             </CardFooter>
+                                </form>
                         </Card>
                     </TabsContent>
                 </Tabs>

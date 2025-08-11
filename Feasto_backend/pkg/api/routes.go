@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/riteshco/Feasto/pkg/controllers"
 	"github.com/riteshco/Feasto/pkg/middleware"
+	"github.com/rs/cors"
 )
 
 func SetupRouter() *mux.Router {
@@ -87,8 +88,19 @@ func SetupRouter() *mux.Router {
 
 func Run() {
 	router := SetupRouter()
+	    // Configure CORS options
+    c := cors.New(cors.Options{
+        AllowedOrigins:   []string{"http://localhost:5173"}, // Replace with your frontend's origin
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedHeaders:   []string{"Authorization", "Content-Type"},
+        AllowCredentials: true,
+    })
+
+    // Wrap the router with the CORS handler
+    handler := c.Handler(router)
+
 	fmt.Println("Listening on http://localhost:3000")
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":3000", handler)
 }
 
 
