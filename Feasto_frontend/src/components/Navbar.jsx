@@ -6,10 +6,28 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useState , useEffect } from "react";
 
 export function Navbar({page , user}) {
+  const [show, setShow] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+   useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY) {
+        // scrolling down
+        setShow(false);
+      } else {
+        // scrolling up
+        setShow(true);
+      }
+      setLastScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
   return (
-    <header className="w-full py-3">
+    <header className={`bg-white dark:bg-black bg fixed top-0 left-0 z-50 w-full py-3 transition-transform duration-300 ${show ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="flex items-center px-2 justify-between">
         <NavigationMenu>
 
@@ -19,6 +37,7 @@ export function Navbar({page , user}) {
             <NavigationMenuItem className="font-bold text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
                 FEASTO
             </NavigationMenuItem>
+            {page !== "Landing" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <a href="/home">
@@ -26,8 +45,9 @@ export function Navbar({page , user}) {
                 </a>
               </NavigationMenuLink>
             </NavigationMenuItem>
+            :null}
             {page === "CustomerHome" || page === "AdminHome" || page === "ChefHome" ?
-                <NavigationMenuItem>
+              <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <a href="/categories">
                   <Button variant="ghost">Categories</Button>
@@ -107,7 +127,9 @@ export function Navbar({page , user}) {
           
         </NavigationMenu>
         <div className="flex gap-4">
+        {page !== "Landing" ? 
         <Button variant="destructive_outline">Logout</Button>
+        : null}
         <ThemeToggle />
         </div>
       </div>

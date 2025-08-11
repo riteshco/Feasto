@@ -65,6 +65,7 @@ body #root{
   padding: 0;
 }
 
+
 @layer base {
   * {
     @apply border-border;
