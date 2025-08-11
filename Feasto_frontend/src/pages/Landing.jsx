@@ -1,8 +1,9 @@
 import { Navbar } from "@/components/Navbar"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { loginUser , setCookie} from "@/api/auth"
+import { loginUser , setCookie , RegisterUser} from "@/api/auth"
 import { Button } from "@/components/ui/button"
+import { Navigate } from "react-router-dom"
 import {
     Card,
     CardContent,
@@ -23,8 +24,21 @@ import { getUserFromToken } from "@/utils/auth"
 
 export function Landing() {
     const user = getUserFromToken()
+    
     if(user) {
         return <Navigate to="/home" replace />;
+    }
+
+    const [mobile_number, setMobileNumber] = useState("");
+    async function handleRegisterSubmit(e) {
+        e.preventDefault();
+        try {
+        const data = await RegisterUser({ username , mobile_number , email , password });
+        console.log("Logged in:", data);
+        navigate("/");
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const [username, setUsername] = useState("");
@@ -36,8 +50,8 @@ export function Landing() {
         e.preventDefault();
         try {
         const data = await loginUser({ username, email , password });
-        console.log("Logged in:", data);
-        await setCookie("auth_token",data.token);
+        console.log("Logged in:", data.username);
+        setCookie("auth_token",data.token);
         navigate("/home");
         } catch (err) {
             console.error(err);
@@ -61,27 +75,29 @@ export function Landing() {
                                     Register yourself here on this Signup Page!
                                 </CardDescription>
                             </CardHeader>
+                            <form onSubmit={handleRegisterSubmit}>
                             <CardContent className="grid gap-4">
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-name">Username:</Label>
-                                    <Input id="tabs-demo-name" placeholder="Your username goes here..." />
+                                    <Input value={username} type="text" maxLength={15} onChange={(e) => setUsername(e.target.value)} id="tabs-demo-name" placeholder="Your username goes here..." required />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Mobile Number:</Label>
-                                    <Input id="tabs-demo-username" placeholder="10 digit number..." />
+                                    <Input value={mobile_number} type="text" maxLength={10} minLength={10} onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))} id="tabs-demo-username" placeholder="10 digit number..." required />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Email</Label>
-                                    <Input id="tabs-demo-username" placeholder="example@example.com" />
+                                    <Input value={email} type="email" onChange={(e) => setEmail(e.target.value)} id="tabs-demo-username" placeholder="example@example.com" required/>
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Password</Label>
-                                    <Input id="tabs-demo-username" placeholder="***********...." />
+                                    <Input value={password} type="password" onChange={(e) => setPassword(e.target.value)} id="tabs-demo-username" placeholder="***********...." required/>
                                 </div>
                             </CardContent>
                             <CardFooter>
                                 <Button>Register</Button>
                             </CardFooter>
+                            </form>
                         </Card>
                     </TabsContent>
                     <TabsContent value="login">
@@ -96,15 +112,15 @@ export function Landing() {
                             <CardContent className="grid gap-6">
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-name">Username:</Label>
-                                    <Input value={username} onChange={(e) => setUsername(e.target.value)} id="tabs-demo-name" placeholder="Your username goes here..." />
+                                    <Input value={username} onChange={(e) => setUsername(e.target.value)} id="tabs-demo-name" placeholder="Your username goes here..." required />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Email</Label>
-                                    <Input value={email} type="email" onChange={(e) => setEmail(e.target.value)} id="tabs-demo-username" placeholder="example@example.com" />
+                                    <Input value={email} type="email" onChange={(e) => setEmail(e.target.value)} id="tabs-demo-username" placeholder="example@example.com" required />
                                 </div>
                                 <div className="grid gap-3">
                                     <Label htmlFor="tabs-demo-username">Password</Label>
-                                    <Input value={password} type="password" onChange={(e) => setPassword(e.target.value)} id="tabs-demo-username" placeholder="***********...." />
+                                    <Input value={password} type="password" onChange={(e) => setPassword(e.target.value)} id="tabs-demo-username" placeholder="***********...." required />
                                 </div>
                             </CardContent>
                             <CardFooter>

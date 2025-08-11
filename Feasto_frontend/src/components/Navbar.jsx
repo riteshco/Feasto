@@ -7,8 +7,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState , useEffect } from "react";
+import Cookies from "js-cookie";
 
 export function Navbar({page , user}) {
+
+  function LogoutUser() {
+  Cookies.remove("auth_token");
+  }
+
+
+
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
    useEffect(() => {
@@ -128,7 +136,9 @@ export function Navbar({page , user}) {
         </NavigationMenu>
         <div className="flex gap-4">
         {page !== "Landing" ? 
-        <Button variant="destructive_outline">Logout</Button>
+        <form onSubmit={LogoutUser}>
+        <Button type="submit" variant="destructive_outline">Logout</Button>
+        </form>
         : null}
         <ThemeToggle />
         </div>

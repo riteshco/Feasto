@@ -1,9 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-// import AdminPage from "../pages/AdminPage";
-// import ChefPage from "../pages/ChefPage";
-// import CustomerPage from "../pages/CustomerPage";
+import { CustomerHome } from "@/pages/home/CustomerHome";
 import { getUserFromToken } from "@/utils/auth";
 import { ProtectedRoute } from "./ProtectedRoute";
 
@@ -19,11 +17,15 @@ export function RoleBasedRoute() {
 
     switch (role) {
       case "admin":
-        return <ProtectedRoute />;
+        return <ProtectedRoute/>;
       case "chef":
         return <ChefHome />;
       case "customer":
-        return <CustomerHome />;
+        return (
+          <ProtectedRoute >
+            <CustomerHome />
+          </ProtectedRoute>
+      )
       default:
         return <h1>Unauthorized</h1>;
     }

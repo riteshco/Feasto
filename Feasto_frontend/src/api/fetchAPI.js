@@ -2,8 +2,12 @@ export const GetProducts = async () => {
     try {
         const response = await fetch(
             "http://localhost:3000/api/all-products"
-        );
-        products = response.json()
+        ,{
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        });
+        const products = await response.json()
+        return products
     }
     catch (error) {
         console.log(error);

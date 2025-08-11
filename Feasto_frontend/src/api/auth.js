@@ -16,6 +16,23 @@ export async function loginUser(credentials) {
   return res.json();
 }
 
+export async function RegisterUser(credentials) {
+  const res = await fetch("http://localhost:3000/api/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(credentials),
+  });
+
+  if (!res.ok) {
+    throw new Error("Register failed");
+  }
+
+  return res;
+}
+
 export const setCookie = (name, value) => {
   let expires = "";
     const date = new Date();
@@ -23,3 +40,5 @@ export const setCookie = (name, value) => {
     expires = "; expires=" + date.toUTCString();
   document.cookie = `${name}=${value || ""}${expires}; path=/`;
 };
+
+
