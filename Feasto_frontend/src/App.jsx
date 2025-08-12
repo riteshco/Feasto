@@ -11,6 +11,8 @@ import { CartPage } from './pages/Cart'
 import { UserOrderPage } from './pages/UserOrders'
 import { OrderDetailPage } from './pages/OrderDetail'
 import { OrderPaymentPage } from './pages/OrderPayment'
+import { PastOrdersPage } from './pages/PastOrders'
+import { AddFoodPage } from './pages/AddFood'
 
 function App() {
 
@@ -68,6 +70,22 @@ function App() {
     element: (
       <ProtectedRoute>
         <OrderPaymentPage/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/past-orders",
+    element: (
+      <ProtectedRoute>
+        <PastOrdersPage/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/add-food",
+    element: (
+      <ProtectedRoute role1="admin" role2="chef">
+        <AddFoodPage/>
       </ProtectedRoute>
     )
   }

@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
+import { ChefHome } from "@/pages/home/ChefHome";
 import { CustomerHome } from "@/pages/home/CustomerHome";
 import { getUserFromToken } from "@/utils/auth";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -16,8 +17,6 @@ export function RoleBasedRoute() {
     const role = user.user_role
 
     switch (role) {
-      case "admin":
-        return <ProtectedRoute/>;
       case "chef":
         return <ChefHome />;
       case "customer":

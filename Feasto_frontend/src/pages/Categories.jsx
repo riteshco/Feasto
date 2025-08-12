@@ -8,6 +8,7 @@ import { GetProducts } from "@/api/fetchAPI"
 import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
+import { getUserFromToken } from "@/utils/auth"
 import {
     Select,
     SelectContent,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/select"
 
 export function CategoriesPage() {
+    const user = getUserFromToken()
 
     const [products, setProducts] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -114,7 +116,7 @@ export function CategoriesPage() {
 
                     <Card className="w-3/4 flex">
                         <div className="cardimage w-1/4 flex justify-center items-center px-4">
-                            <img src={product.image_url.String} alt="Product_image" className="w-full rounded-2xl" />
+                            <img src={product.image_url.String} alt="Product_image" className="w-full rounded-2xl object-fill" />
                         </div>
                         <div className="cardinfo w-3/4">
 
@@ -126,24 +128,26 @@ export function CategoriesPage() {
                                 Price : ${product.price}
                             </CardHeader>
                             <CardContent>
+                                {user.user_role === "customer" ? 
                                 <div className="flex flex-col gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
                                         <Input
-                                            id={`qty-${product.id}`}
-                                            type="number"
-                                            min={1}
-                                            max={1000}
-                                            required
-                                            value={quantities[product.id] || 1}
-                                            onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                        id={`qty-${product.id}`}
+                                        type="number"
+                                        min={1}
+                                        max={1000}
+                                        required
+                                        value={quantities[product.id] || 1}
+                                        onChange={(e) => handleQuantityChange(product.id, e.target.value)}
                                         />
                                         <Button onClick={() => addToCart(product.id)} variant="outline">Add to Cart</Button>
-                                    </div>
+                                        </div>
                                     <div className="grid gap-2">
                                         <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
                                     </div>
                                 </div>
+                                    : null}
                             </CardContent>
                         </div>
                     </Card>

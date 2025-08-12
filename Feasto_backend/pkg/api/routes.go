@@ -30,8 +30,9 @@ func SetupRouter() *mux.Router {
 	//--Pages (For front end)--
 	// authRouter.HandleFunc("/add-food", controllers.AddFoodpage).Methods("GET")
 	// authRouter.HandleFunc("/admin", controllers.AdminPage).Methods("GET")
-	// authRouter.HandleFunc("/past-orders", controllers.PastOrdersPage).Methods("GET")
 	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
+
+	authRouter.HandleFunc("/past-orders", controllers.UserPastOrdersAPI).Methods("GET")
 
 	authRouter.HandleFunc("/order/items/{id:[0-9]+}", controllers.OrderItemsAPI).Methods("GET")
 

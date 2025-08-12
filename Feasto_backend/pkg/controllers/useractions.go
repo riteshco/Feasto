@@ -29,6 +29,24 @@ func UserOrdersAPI(w http.ResponseWriter , r *http.Request){
 
 }
 
+func UserPastOrdersAPI(w http.ResponseWriter , r *http.Request){
+	CustomerID := r.Context().Value("id").(int)
+	orders ,status , err := models.GetPastOrdersByCustomerIdDB(CustomerID)
+	if err != nil {
+		toSend := types.Message{Message: err.Error()}
+		b, err := json.Marshal(toSend)
+		if err != nil {
+			fmt.Println(err, "could not marshal message")
+		}
+		http.Error(w, string(b), status)
+		fmt.Println("Error in getting orders from Database : " , err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(orders)
+
+}
+
 
 func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 	vars := mux.Vars(r)

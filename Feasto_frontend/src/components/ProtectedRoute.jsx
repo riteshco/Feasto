@@ -14,11 +14,11 @@ export function AdminRoute({ children }) {
   return children;
 }
 
-export function ProtectedRoute({ children, role }) {
+export function ProtectedRoute({ children, role1 , role2 }) {
   const user = getUserFromToken();
   
   if (!user) return <Navigate to="/" />; // not logged in
-  if (role && user.user_role !== role) return <Navigate to="/unauthorized" />; // role mismatch
+  if ((role1 || role2) && user.user_role !== role1 && user.user_role !== role2) return <Navigate to="/unauthorized" />; // role mismatch
   
   return children;
 }

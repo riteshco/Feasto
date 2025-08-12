@@ -122,7 +122,7 @@ func GetSingleUserAPI(w http.ResponseWriter , r *http.Request) {
 
 func GetAllOrdersAPI(w http.ResponseWriter , r *http.Request) {
 	UserRole := r.Context().Value("user_role").(string)
-	if UserRole == constants.RoleAdmin {
+	if UserRole == constants.RoleAdmin || UserRole == constants.RoleChef {
 		orders, status , err := models.GetAllOrdersDB()
 		if err != nil {
         	http.Error(w, err.Error(), status)

@@ -198,6 +198,32 @@ func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , int , error){
     return orders, http.StatusOK , nil
 }
 
+func GetPastOrdersByCustomerIdDB(customerID int) ([]types.Order , int , error){
+	query := `SELECT * FROM Orders Where customer_id = ? AND current_status = "delivered"`
+	
+	rows, err := DB.Query(query , customerID)
+    if err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error fetching orders: %v", err)
+    }
+    defer rows.Close()
+
+    var orders []types.Order
+
+    for rows.Next() {
+        var o types.Order
+        if err := rows.Scan(&o.Id, &o.CreatedAt, &o.CurrentStatus, &o.CustomerId, &o.ChefId, &o.TableNumber , &o.Instructions); err != nil {
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
+        }
+        orders = append(orders, o)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
+    }
+
+    return orders, http.StatusOK , nil
+}
+
 func GetCartOrderItemsDB(CustomerID int) ([]types.OrderItem , int , error) {
 	query := "SELECT * FROM OrderItems WHERE customer_id = ? AND order_id IS NULL"
 	rows , err := DB.Query(query , CustomerID)

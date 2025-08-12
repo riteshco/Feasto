@@ -82,14 +82,14 @@ export function Navbar({page , user}) {
             {page === "CustomerHome" || page === "ChefHome" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/orders">
+                <a href="/past-orders">
                   <Button variant="ghost">Past-Orders</Button>
                 </a>
               </NavigationMenuLink>
             </NavigationMenuItem>
                 :null}
 
-            {user === "Admin" || user==="Chef" ? 
+            {user === "admin" || user==="chef" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <a href="/add-food">
@@ -99,7 +99,7 @@ export function Navbar({page , user}) {
             </NavigationMenuItem>
             :null}
 
-            {user === "Admin" ? 
+            {user === "admin" ? 
             <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>

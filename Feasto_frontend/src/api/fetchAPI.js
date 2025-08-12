@@ -29,6 +29,36 @@ export const fetchUserOrder = async () => {
     }
 }
 
+export const GetAllOrdersAPICall = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/api/all-orders"
+        ,{
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        });
+        const orders = await response.json()
+        return orders
+    } catch (error){
+        console.log(error)
+    }
+}
+
+export const fetchUserPastOrder = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/api/past-orders"
+        ,{
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        });
+        const orders = await response.json()
+        return orders
+    } catch (error){
+        console.log(error)
+    }
+}
+
 export const GetUsers = async () => {
     try {
         const response = await fetch(
