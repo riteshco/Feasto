@@ -46,13 +46,19 @@ export function Navbar({page , user}) {
             {page !== "Landing" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
+                {user === "admin" ?
+                <a href="/admin">
+                  <Button variant="ghost">Admin Panel</Button>
+                </a>
+                :
                 <a href="/home">
                   <Button variant="ghost">Home</Button>
                 </a>
+                }
               </NavigationMenuLink>
             </NavigationMenuItem>
             :null}
-            {page === "CustomerHome" || page === "AdminHome" || page === "ChefHome" ?
+            {page === "CustomerHome" || page === "AdminDashboard" || page === "ChefHome" ?
               <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <a href="/categories">
@@ -103,7 +109,7 @@ export function Navbar({page , user}) {
             <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/add-food">
+                <a href="/all-orders">
                   <Button variant="ghost">All-Orders</Button>
                 </a>
               </NavigationMenuLink>
@@ -119,7 +125,7 @@ export function Navbar({page , user}) {
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/payments">
+                <a href="/all-payments">
                   <Button variant="ghost">All-Payments</Button>
                 </a>
               </NavigationMenuLink>

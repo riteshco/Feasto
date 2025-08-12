@@ -350,9 +350,7 @@ func AcceptOrderDB(paymentID int) (int , error) {
 	query := `
 		UPDATE Orders 
 		SET current_status = "accepted" 
-		WHERE id = (
-			SELECT order_id FROM Payments WHERE id = ?
-		)
+		WHERE id = ?
 	`
 
 	result, err := DB.Exec(query, paymentID)

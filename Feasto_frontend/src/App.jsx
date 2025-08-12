@@ -13,6 +13,10 @@ import { OrderDetailPage } from './pages/OrderDetail'
 import { OrderPaymentPage } from './pages/OrderPayment'
 import { PastOrdersPage } from './pages/PastOrders'
 import { AddFoodPage } from './pages/AddFood'
+import { AdminDashboard } from './pages/admin/adminDashboard'
+import { DataTableDemo } from './pages/admin/Allusers'
+import { AllOrdersPage } from './pages/admin/AllOrders'
+import { AllPaymentsPage } from './pages/admin/AllPayments'
 
 function App() {
 
@@ -29,7 +33,31 @@ function App() {
     path: "/admin",
     element: (
       <AdminRoute>
-        {/* <AdminDashboard /> */}
+        <AdminDashboard />
+      </AdminRoute>
+    )
+  },
+  {
+    path: "/users",
+    element: (
+      <AdminRoute>
+        <DataTableDemo />
+      </AdminRoute>
+    )
+  },
+  {
+    path: "/all-orders",
+    element: (
+      <AdminRoute>
+        <AllOrdersPage />
+      </AdminRoute>
+    )
+  },
+  {
+    path: "/all-payments",
+    element: (
+      <AdminRoute>
+        <AllPaymentsPage />
       </AdminRoute>
     )
   },

@@ -28,8 +28,6 @@ func SetupRouter() *mux.Router {
 	authRouter.Use(middleware.JWTAuthMiddleware)
 	
 	//--Pages (For front end)--
-	// authRouter.HandleFunc("/add-food", controllers.AddFoodpage).Methods("GET")
-	// authRouter.HandleFunc("/admin", controllers.AdminPage).Methods("GET")
 	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
 
 	authRouter.HandleFunc("/past-orders", controllers.UserPastOrdersAPI).Methods("GET")
@@ -92,7 +90,7 @@ func Run() {
 	    // Configure CORS options
     c := cors.New(cors.Options{
         AllowedOrigins:   []string{"http://localhost:5173"}, // Replace with your frontend's origin
-        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
         AllowedHeaders:   []string{"Authorization", "Content-Type"},
         AllowCredentials: true,
     })

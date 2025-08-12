@@ -80,7 +80,12 @@ export function CategoriesPage() {
 
     return (
         <>
-            <Navbar page="CategoriesPage" />
+            {user.user_role === "admin"
+                ?
+                <Navbar page="CategoriesPage" user="admin"/>
+                :
+                <Navbar page="CategoriesPage" />
+            }
             <div className="relative w-full h-96 mt-16">
                 <div className="Main_image h-full flex justify-center">
                     <img

@@ -11,13 +11,16 @@ import { useNavigate } from "react-router-dom"
 
 export function CustomerHome() {
 
-    const [products, setProducts] = useState(null);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [searchTerm, setSearchTerm] = useState("");
+
     
     const [quantities, setQuantities] = useState({});
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         async function fetchProducts() {
             try {
@@ -30,9 +33,13 @@ export function CustomerHome() {
             }
         }
         fetchProducts();
-
+        
     }, []);
-
+    
+    const filteredProducts = products.filter((p) =>
+    p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if (loading) return <div>Loading products...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -73,15 +80,17 @@ export function CustomerHome() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-4">
                     <h1 className="text-5xl font-bold mb-4">Welcome to Feasto</h1>
                     <form action="" className="flex justify-center gap-4 w-full">
-                        <Input className="w-1/2 font-extrabold text-2xl bg-white/15" placeholder="Search products..." />
-                        <Button>Search</Button>
+                        <Input
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-1/2 font-extrabold text-2xl bg-white/15" placeholder="Search products..." />
                     </form>
                 </div>
             </div>
 
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
                 {console.log(products)}
-                {products.map((product) => (
+                {filteredProducts ? filteredProducts.map((product) => (
 
                     <Card className="w-3/4 flex">
                         <div className="cardimage w-1/4 flex justify-center items-center px-4">
@@ -118,7 +127,8 @@ export function CustomerHome() {
                             </CardContent>
                         </div>
                     </Card>
-                ))}
+                ))
+            : nil}
 
             </div>
         </>

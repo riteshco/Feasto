@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AddFoodAPICall } from "@/api/Product";
+import { getUserFromToken } from "@/utils/auth";
 
 export function AddFoodPage() {
 
@@ -28,9 +29,16 @@ export function AddFoodPage() {
         e.target.image_url.value = ""
     }
 
+    const user = getUserFromToken()
+
     return (
         <>
-            <Navbar page="AddFoodPage" />
+            {user.user_role === "admin"
+                ?
+                <Navbar page="AddFoodPage" user="admin" />
+                :
+                <Navbar page="AddFoodPage" />
+            }
             <div className="body flex flex-col items-center justify-center mt-28 gap-12">
                 <div className="title">
                     <div className="text-5xl font-extrabold">Add-Food</div>

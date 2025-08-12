@@ -26,6 +26,9 @@ export function Landing() {
     const user = getUserFromToken()
     
     if(user) {
+        if(user.user_role === "admin"){
+            return <Navigate to="/admin" replace />;
+        }
         return <Navigate to="/home" replace />;
     }
 
@@ -52,6 +55,9 @@ export function Landing() {
         const data = await loginUser({ username, email , password });
         console.log("Logged in:", data.username);
         setCookie("auth_token",data.token);
+        if(data.user_role === "admin"){
+            navigate("/admin")
+        }
         navigate("/home");
         } catch (err) {
             console.error(err);
