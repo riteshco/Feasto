@@ -82,6 +82,40 @@ func GetCartItemsAPI(w http.ResponseWriter , r *http.Request){
     json.NewEncoder(w).Encode(response)
 }
 
+func OrderItemsAPI(w http.ResponseWriter , r *http.Request){
+	vars := mux.Vars(r)
+	IdStr := vars["id"]
+	OrderID , err := strconv.Atoi(IdStr)
+	if err != nil {
+		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+		return 
+	}
+	CustomerID := r.Context().Value("id").(int)
+
+	orderItems , status , err := models.GetCartOrderItemsByOrderIdDB(CustomerID , OrderID)
+	if err != nil {
+		http.Error(w , "Server Error" , status)
+		fmt.Println("Error in getting OrderItem by OrderID in DB : " , err)
+		return
+	}
+	productItems , status , err := models.GetCartProductItemsByOrderIdDB(CustomerID , OrderID)
+	if err != nil {
+		http.Error(w , "Server Error" , status)
+		fmt.Println("Error in getting ProductItems by OrderID in DB : " , err)
+		return
+	}
+	response := struct {
+        Orders   interface{} `json:"orders"`
+        Products interface{} `json:"products"`
+    }{
+        Orders:   orderItems,
+        Products: productItems,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
 func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 	vars := mux.Vars(r)
 	idStr := vars["id"]

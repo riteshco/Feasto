@@ -14,6 +14,21 @@ export const GetProducts = async () => {
     }
 }
 
+export const fetchUserOrder = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:3000/api/orders"
+        ,{
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        });
+        const orders = await response.json()
+        return orders
+    } catch (error){
+        console.log(error)
+    }
+}
+
 export const GetUsers = async () => {
     try {
         const response = await fetch(
@@ -36,4 +51,42 @@ export const GetUserByID = async (id) => {
     catch (error) {
         console.log(error);
     }
+}
+export async function GetOrderPayment(OrderId) {
+    try{
+        const res = await fetch(`http://localhost:3000/api/order/payment/${OrderId}`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        });
+        const data = await res.json();
+        return data
+    } catch (error){
+        alert(error.message)
+    }
+}
+
+export async function GetOrderDetail(OrderId) {
+  const res = await fetch(`http://localhost:3000/api/order/items/${OrderId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (data.orders) {
+
+    return data.orders.map(order => {
+      const product = data.products.find(p => p.id === order.product_id);
+      return {
+        orderId: order.id,
+        product_name: product ? product.product_name : "Unknown Product",
+        quantity: order.quantity,
+        price: product.price
+      };
+    });
+  } else {
+    return null
+  }
 }

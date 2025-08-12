@@ -8,6 +8,9 @@ import { createBrowserRouter, Routes, Route, RouterProvider } from "react-router
 import { AdminRoute , ProtectedRoute } from './components/ProtectedRoute';
 import { RoleBasedRoute } from '@/components/RoleBasedRoute'
 import { CartPage } from './pages/Cart'
+import { UserOrderPage } from './pages/UserOrders'
+import { OrderDetailPage } from './pages/OrderDetail'
+import { OrderPaymentPage } from './pages/OrderPayment'
 
 function App() {
 
@@ -40,10 +43,34 @@ function App() {
     path: "/cart",
     element: (
     <ProtectedRoute>
-    <CartPage/>,
+    <CartPage/>
     </ProtectedRoute>
     )
   },
+  {
+    path: "/orders",
+    element: (
+      <ProtectedRoute>
+        <UserOrderPage/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/order/items/:id",
+    element: (
+      <ProtectedRoute>
+        <OrderDetailPage/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/order/payment/:id",
+    element: (
+      <ProtectedRoute>
+        <OrderPaymentPage/>
+      </ProtectedRoute>
+    )
+  }
   ])
 
   return <RouterProvider router={router} />;

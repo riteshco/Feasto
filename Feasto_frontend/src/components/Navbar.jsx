@@ -40,9 +40,7 @@ export function Navbar({page , user}) {
         <NavigationMenu>
 
           <NavigationMenuList className="flex gap-2">
-
-
-            <NavigationMenuItem className="font-bold text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+            <NavigationMenuItem className="font-bold text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,1)]">
                 FEASTO
             </NavigationMenuItem>
             {page !== "Landing" ? 
