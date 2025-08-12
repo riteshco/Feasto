@@ -63,6 +63,7 @@ export function AllOrdersPage() {
             </div>
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
                 {AllOrders ? AllOrders.map((order , index) => (
+                    order.current_status !== "delivered" ? 
                     <Card className="w-3/4 flex">
                         <div className="cardinfo w-1/2">
                             <CardHeader>
@@ -99,6 +100,7 @@ export function AllOrdersPage() {
                             </CardContent>
                         </div>
                     </Card>
+                    : null 
                 ))
             : null}
             </div>

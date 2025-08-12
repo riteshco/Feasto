@@ -55,10 +55,11 @@ export function Landing() {
         const data = await loginUser({ username, email , password });
         console.log("Logged in:", data.username);
         setCookie("auth_token",data.token);
-        if(data.user_role === "admin"){
+        if(data.role === "admin"){
             navigate("/admin")
+        } else {
+            navigate("/home");
         }
-        navigate("/home");
         } catch (err) {
             console.error(err);
         }
