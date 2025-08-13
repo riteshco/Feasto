@@ -3,10 +3,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { fetchUserOrder } from "@/api/fetchAPI";
-import { RemoveFromCart , fetchCart , PlaceOrderAPICall } from "@/api/Cart";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
 export function UserOrderPage() {
