@@ -21,6 +21,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { getUserFromToken } from "@/utils/auth"
+import { toast , Toaster } from "sonner"
 
 export function Landing() {
     const user = getUserFromToken()
@@ -38,6 +39,20 @@ export function Landing() {
         try {
         const data = await RegisterUser({ username , mobile_number , email , password });
         console.log("Logged in:", data);
+        if(data.statusText.toLowerCase() === "ok"){
+            toast("User registered Successfully", {
+                action: {
+                    label: "Ok",
+                },
+            })
+        }
+        else{
+            toast(data.statusText, {
+                action: {
+                    label: "Ok",
+                },
+            })
+        }
         navigate("/");
         } catch (err) {
             console.error(err);
@@ -69,11 +84,14 @@ export function Landing() {
         <>
             <Navbar page="Landing" />
             <div className="flex items-center justify-center h-full w-full mt-16 flex-col gap-6 p-20">
-                <Tabs defaultValue="Signup/Login" className="w-3/4">
-                    <TabsList>
+                <Toaster position="top-center"/>
+                <Tabs defaultValue="login" className="w-3/4">
+                <div className="flex justify-center">
+                    <TabsList className="">
                         <TabsTrigger value="signup">Signup</TabsTrigger>
                         <TabsTrigger value="login">Login</TabsTrigger>
                     </TabsList>
+                </div>
                     <TabsContent value="signup">
                         <Card>
                             <CardHeader>

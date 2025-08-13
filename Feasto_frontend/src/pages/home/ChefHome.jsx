@@ -1,20 +1,17 @@
 import { Navbar } from "@/components/Navbar"
 import MainImage from "@/assets/food_home_image.jpg"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { GetAllOrdersAPICall } from "@/api/fetchAPI"
 import { DeliverOrderAPICall } from "@/api/ChefAction"
+import { toast , Toaster } from "sonner"
 
 export function ChefHome() {
 
     const [AllOrders, setAllOrders] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
-    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchAllOrders() {
@@ -32,7 +29,12 @@ export function ChefHome() {
     }, []);
 
     async function AskToDeliverOrder(OrderID){
-        await DeliverOrderAPICall(OrderID)
+        const message = await DeliverOrderAPICall(OrderID)
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
         const allords = await GetAllOrdersAPICall();
         setAllOrders(allords);
         setLoading(false);
@@ -47,6 +49,7 @@ export function ChefHome() {
         <>
             <Navbar page="ChefHome" user="chef" />
             <div className="relative w-full h-96 mt-16">
+                <Toaster position="top-center"/>
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}
@@ -92,11 +95,6 @@ export function ChefHome() {
                                 <div className="w-3/4 flex justify-center" >
                                     <Button variant="outline" >Order not accepted/verified by Admin yet!</Button>
                                 </div>}
-                                {order.current_status === "accepted" || order.current_status === "delivered" ?
-                                <div className="w-3/4 flex justify-center">
-                                    <Button variant="outline" className="w-1/2">Bill</Button>
-                                </div>
-                                :null}
                             </CardContent>
                         </div>
                     </Card>

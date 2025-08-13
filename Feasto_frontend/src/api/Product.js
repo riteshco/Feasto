@@ -7,8 +7,8 @@ export async function AddFoodAPICall(credentials) {
             credentials: "include"
         });
     if (!res.ok) throw new Error("Failed to add food to the menu");
-    alert(`Successfully Added to the menu!`);
+    return `Successfully Added to the menu!`
   } catch (error) {
-    alert(error.message)
+    return error.message
   }
 }

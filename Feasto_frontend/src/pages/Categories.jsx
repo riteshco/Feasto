@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Toaster , toast } from "sonner"
 
 export function CategoriesPage() {
     const user = getUserFromToken()
@@ -65,7 +66,12 @@ export function CategoriesPage() {
 
     async function addToCart(productId) {
         let qty = quantities[productId] || 1;
-        await AddToCartAPICall(productId, qty);
+        const message = await AddToCartAPICall(productId, qty);
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
     }
 
     async function addOneToCart(productId) {
@@ -87,6 +93,7 @@ export function CategoriesPage() {
                 <Navbar page="CategoriesPage" />
             }
             <div className="relative w-full h-96 mt-16">
+                <Toaster position="top-center"/>
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}

@@ -6,6 +6,8 @@ import { RemoveFromCart , fetchCart , PlaceOrderAPICall } from "@/api/Cart";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
+import { toast , Toaster } from "sonner";
+import { Link } from "react-router-dom";
 
 export function CartPage() {
   const [cartData, setCartData] = useState([]);
@@ -20,7 +22,13 @@ export function CartPage() {
 
     async function AskToRemoveFromCart(Id){
         setCartData(prev => prev.filter(item => item.id !== Id));
-        await RemoveFromCart(Id);
+        const message = await RemoveFromCart(Id);
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
+
         let merged = await fetchCart();
         setCartData(merged);
     }
@@ -30,7 +38,12 @@ export function CartPage() {
         const table_number = parseInt(e.target.table_number.value , 10)
         const instructions = e.target.instructions.value
 
-        await PlaceOrderAPICall({table_number , instructions})
+        const message = await PlaceOrderAPICall({table_number , instructions})
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
         let merged = await fetchCart();
         setCartData(merged);
     }
@@ -38,14 +51,16 @@ export function CartPage() {
     return (
         <>
             <Navbar page="CartPage" />
+            {cartData  ?
+            <>
             <div className="relative w-full h-96 mt-16">
+                <Toaster position="top-center"/>
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-4">
                     <h1 className="text-5xl font-bold mb-4">Cart!!</h1>
                 </div>
             </div>
-
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
-                {cartData ? cartData.map((cartItem) => (
+                {cartData.map((cartItem) => (
 
                     <Card className="w-3/4 flex">
                         <div className="cardinfo w-3/4">
@@ -55,7 +70,10 @@ export function CartPage() {
                                 Quantity : {cartItem.quantity}
                                 </div>
                                 <div className="price">
-                                Price : {cartItem.price}
+                                Product Price (x1): ${cartItem.price}
+                                </div>
+                                <div className="total_price">
+                                    Total price : ${cartItem.price * cartItem.quantity}
                                 </div>
                             </CardHeader>
                             <CardContent>
@@ -65,8 +83,7 @@ export function CartPage() {
                             </CardContent>
                         </div>
                     </Card>
-                ))
-            : null}
+                ))}
             <form className="flex flex-col w-3/4 gap-4" onSubmit={PlaceCartOrder}>
                 <Label htmlFor="table_number">Table Number:</Label>
                 <Input id="table_number"
@@ -80,6 +97,17 @@ export function CartPage() {
                 <Button className="w-full" >Place Your Order</Button>
             </form>
             </div>
+                </>
+                :
+                <div className="flex flex-col items-center gap-12 mt-36">
+                <div className="text-3xl">Your cart is empty!</div>
+                <Button className="mx-auto">
+                    <Link to="/home">
+                    Place a Order Now!
+                    </Link>
+                    </Button>
+                </div>
+                }
         </>
     )
 }

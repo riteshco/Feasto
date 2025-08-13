@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { GetAllOrdersAPICall } from "@/api/fetchAPI"
 import { AcceptOrderAPICall } from "@/api/AdminAction"
+import { Toaster , toast } from "sonner"
 
 export function AllOrdersPage() {
 
@@ -29,7 +30,13 @@ export function AllOrdersPage() {
 
     async function AskToAcceptOrder(OrderID){
         console.log(OrderID)
-        await AcceptOrderAPICall(OrderID)
+        const message = await AcceptOrderAPICall(OrderID)
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
+
         const allords = await GetAllOrdersAPICall();
         setAllOrders(allords);
         setLoading(false);
@@ -44,6 +51,7 @@ export function AllOrdersPage() {
         <>
             <Navbar user="admin" />
             <div className="relative w-full h-96 mt-16">
+                <Toaster position="top-center"/>
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}
@@ -51,7 +59,6 @@ export function AllOrdersPage() {
                         className="w-3/4 h-full rounded-3xl object-cover"
                     />
                 </div>
-
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-4">
                     <h1 className="text-5xl font-bold mb-4">All Orders From all Users</h1>
                 </div>
@@ -97,7 +104,9 @@ export function AllOrdersPage() {
                     </Card>
                     : null 
                 ))
-            : null}
+            : 
+            <div className="text-3xl font-bold mb-4">No Orders YET!!</div>
+            }
             </div>
         </>
     )

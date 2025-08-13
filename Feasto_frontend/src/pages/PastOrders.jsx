@@ -66,11 +66,6 @@ export function PastOrdersPage() {
                                 <div className="w-3/4 flex justify-center">
                                     <Button onClick={()=>{GoToPayment(order.id)}} className="w-1/2">Payment</Button>
                                 </div>
-                                {order.current_status === "accepted" || order.current_status === "delivered" ?
-                                <div className="w-3/4 flex justify-center">
-                                    <Button variant="outline" className="w-1/2">Bill</Button>
-                                </div>
-                                :null}
                             </CardContent>
                         </div>
                     </Card>

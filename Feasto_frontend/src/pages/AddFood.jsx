@@ -12,17 +12,59 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AddFoodAPICall } from "@/api/Product";
 import { getUserFromToken } from "@/utils/auth";
+import { Check, ChevronsUpDown } from "lucide-react"
+import { Toaster , toast } from "sonner";
+
+import { cn } from "@/lib/utils"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { useEffect, useState } from "react";
+import { GetProducts } from "@/api/fetchAPI";
 
 export function AddFoodPage() {
 
-    const AskToAddFood = async (e) =>{
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState("")
+    const [categories, setCategory] = useState([])
+
+    useEffect(() => {
+        async function AskForFoodCategories() {
+            const data = await GetProducts()
+            let cats = []
+            const uniquedata = [...new Map(data.map(item => [item.category, item])).values()];
+            uniquedata.map((product) => {
+                cats.push({ value: product.category, label: product.category })
+            })
+            setCategory(cats)
+        }
+        AskForFoodCategories();
+    }, [])
+    console.log(categories)
+
+    const AskToAddFood = async (e) => {
         e.preventDefault();
         const product_name = e.target.product_name.value
         const price = parseFloat(e.target.price.value)
         const category = e.target.category.value
         const image_url = e.target.image_url.value
 
-        await AddFoodAPICall({product_name , price , category , image_url})
+        const message = await AddFoodAPICall({ product_name, price, category, image_url })
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
         e.target.product_name.value = ""
         e.target.price.value = ""
         e.target.category.value = ""
@@ -40,6 +82,7 @@ export function AddFoodPage() {
                 <Navbar page="AddFoodPage" />
             }
             <div className="body flex flex-col items-center justify-center mt-28 gap-12">
+                <Toaster position="top-center"/>
                 <div className="title">
                     <div className="text-5xl font-extrabold">Add-Food</div>
                 </div>
@@ -52,8 +95,8 @@ export function AddFoodPage() {
                                 Enter all the details given below to add it to our Restaurant's great Menu!
                             </CardDescription>
                         </CardHeader>
-                            <CardContent>
-                        <form onSubmit={AskToAddFood}>
+                        <CardContent>
+                            <form onSubmit={AskToAddFood}>
                                 <div className="flex flex-col gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="product_name">Food Name:</Label>
@@ -78,13 +121,71 @@ export function AddFoodPage() {
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="category">Category:</Label>
-                                        <Input
-                                            id="category"
-                                            type="text"
-                                            placeholder="Category for new menu item......"
-                                            required
-                                        />
+                                        <Popover open={open} onOpenChange={setOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    aria-expanded={open}
+                                                    className="w-[200px] justify-between"
+                                                >
+                                                    {value
+                                                        ? categories.find((c) => c.value === value)?.label
+                                                        : "Select or Add Category..."}
+                                                    <ChevronsUpDown className="opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[250px] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search or add new category..." className="h-9" />
+                                                    <CommandList>
+                                                        <CommandEmpty>
+                                                            <Button
+                                                                className="w-full h-8 text-sm"
+                                                                onClick={() => {
+                                                                    // Example: set typed value as new category
+                                                                    const newCategory = document.querySelector(
+                                                                        '[placeholder="Search or add new category..."]'
+                                                                    ).value.trim();
+
+                                                                    if (newCategory && !categories.some((c) => c.value === newCategory)) {
+                                                                        const newCatObj = { value: newCategory, label: newCategory };
+                                                                        setCategory((prev) => [...prev, newCatObj]);
+                                                                        setValue(newCategory);
+                                                                        setOpen(false);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                ➕ Add new category
+                                                            </Button>
+                                                        </CommandEmpty>
+                                                        <CommandGroup>
+                                                            {categories.map((Category) => (
+                                                                <CommandItem
+                                                                    key={Category.value}
+                                                                    value={Category.value}
+                                                                    onSelect={(currentValue) => {
+                                                                        setValue(currentValue === value ? "" : currentValue);
+                                                                        setOpen(false);
+                                                                    }}
+                                                                >
+                                                                    {Category.label}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "ml-auto",
+                                                                            value === Category.value ? "opacity-100" : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <input type="hidden" name="category" value={value} required />
                                     </div>
+
                                     <div className="grid gap-2">
                                         <Label htmlFor="image_url">URL for the product image:</Label>
                                         <Input
@@ -95,12 +196,12 @@ export function AddFoodPage() {
                                     </div>
                                 </div>
                                 <div className="flex justify-center mt-8">
-                                <Button type="submit" className="w-1/2">
-                                    Add the Food item
-                                </Button>
+                                    <Button type="submit" className="w-1/2">
+                                        Add the Food item
+                                    </Button>
                                 </div>
-                        </form>
-                            </CardContent>
+                            </form>
+                        </CardContent>
                     </Card>
                 </div>
             </div>

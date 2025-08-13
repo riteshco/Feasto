@@ -6,9 +6,9 @@ export async function AddToCartAPICall(productId, quantity) {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to add to cart");
-    alert(`Added ${quantity} item(s) to cart!`);
+    return `Added ${quantity} item(s) of Product with id #${productId} to cart!`
   } catch (err) {
-    alert(err.message);
+    return err.message
   }
 }
 
@@ -20,9 +20,9 @@ export async function RemoveFromCart(OrderItemId) {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to remove to cart");
-    alert(`Successfully removed to cart!`);
+    return `Successfully removed to cart!`
   } catch (error) {
-    alert(err.message)
+    return err.message
   }
 }
 
@@ -59,8 +59,8 @@ export async function PlaceOrderAPICall(credentials) {
             credentials: "include"
         });
     if (!res.ok) throw new Error("Failed order from cart");
-    alert(`Successfully order placed!`);
+    return `Successfully order placed!`
   } catch (error) {
-    alert(error.message)
+    return error.message
   }
 }

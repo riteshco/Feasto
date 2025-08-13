@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState , useEffect } from "react";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 export function Navbar({page , user}) {
 
@@ -36,7 +37,7 @@ export function Navbar({page , user}) {
   }, [lastScrollY]);
   return (
     <header className={`bg-white dark:bg-black bg fixed top-0 left-0 z-50 w-full py-3 transition-transform duration-300 ${show ? "translate-y-0" : "-translate-y-full"}`}>
-      <div className="flex items-center px-2 justify-between">
+      <div className="flex items-center px-8 justify-between">
         <NavigationMenu>
 
           <NavigationMenuList className="flex gap-2">
@@ -47,13 +48,13 @@ export function Navbar({page , user}) {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 {user === "admin" ?
-                <a href="/admin">
+                <Link to="/admin">
                   <Button variant="ghost">Admin Panel</Button>
-                </a>
+                </Link>
                 :
-                <a href="/home">
+                <Link to="/home">
                   <Button variant="ghost">Home</Button>
-                </a>
+                </Link>
                 }
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -61,9 +62,9 @@ export function Navbar({page , user}) {
             {page === "CustomerHome" || page === "AdminDashboard" || page === "ChefHome" ?
               <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/categories">
+                <Link to="/categories">
                   <Button variant="ghost">Categories</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             : null}
@@ -71,26 +72,26 @@ export function Navbar({page , user}) {
               <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/orders">
+                <Link to="/orders">
                   <Button variant="ghost">Orders</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/cart">
+                <Link to="/cart">
                   <Button variant="ghost">Cart</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
                 </>:null}
             {page === "CustomerHome" || page === "ChefHome" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/past-orders">
+                <Link to="/past-orders">
                   <Button variant="ghost">Past-Orders</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
                 :null}
@@ -98,9 +99,9 @@ export function Navbar({page , user}) {
             {user === "admin" || user==="chef" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/add-food">
+                <Link to="/add-food">
                   <Button variant="ghost">Add-Food</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             :null}
@@ -109,25 +110,25 @@ export function Navbar({page , user}) {
             <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/all-orders">
+                <Link to="/all-orders">
                   <Button variant="ghost">All-Orders</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/users">
+                <Link to="/users">
                   <Button variant="ghost">All-Users</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <a href="/all-payments">
+                <Link to="/all-payments">
                   <Button variant="ghost">All-Payments</Button>
-                </a>
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 

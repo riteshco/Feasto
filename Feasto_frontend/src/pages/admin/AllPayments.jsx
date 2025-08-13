@@ -43,7 +43,7 @@ export function AllPaymentsPage() {
                 </div>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-4">
-                    <h1 className="text-5xl font-bold mb-4">All Orders From all Users</h1>
+                    <div className="text-5xl font-bold mb-4">All Payments From all Users</div>
                 </div>
             </div>
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
@@ -70,7 +70,9 @@ export function AllPaymentsPage() {
                         </div>
                     </Card>
                 ))
-            : null}
+            : 
+            <div className="text-3xl font-bold mb-4">No Payments YET!!</div>
+            }
             </div>
         </>
     )

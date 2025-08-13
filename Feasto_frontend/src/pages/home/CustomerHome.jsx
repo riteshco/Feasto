@@ -8,6 +8,7 @@ import { GetProducts } from "@/api/fetchAPI"
 import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
+import { toast , Toaster } from "sonner"
 
 export function CustomerHome() {
 
@@ -57,7 +58,13 @@ export function CustomerHome() {
 
     async function addToCart(productId) {
         let qty = quantities[productId] || 1;
-        await AddToCartAPICall(productId , qty);
+        const message = await AddToCartAPICall(productId , qty);
+        toast(message, {
+                action: {
+                    label: "Ok",
+                },
+        })
+
     }
 
     async function addOneToCart(productId) {
@@ -69,6 +76,7 @@ export function CustomerHome() {
         <>
             <Navbar page="CustomerHome" />
             <div className="relative w-full h-96 mt-16">
+                <Toaster position="top-center"/>
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}

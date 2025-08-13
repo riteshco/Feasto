@@ -14,10 +14,16 @@ import { AdminDashboard } from './pages/admin/adminDashboard'
 import { DataTableDemo } from './pages/admin/Allusers'
 import { AllOrdersPage } from './pages/admin/AllOrders'
 import { AllPaymentsPage } from './pages/admin/AllPayments'
+import Layout from './components/Layout';
 
 function App() {
 
   const router = createBrowserRouter([
+    {
+      path : "/",
+      element: <Layout/>,
+      children:
+    [
     {
       path: "/",
       element: <Landing />,
@@ -114,7 +120,9 @@ function App() {
       </ProtectedRoute>
     )
   }
-  ])
+  ]
+}]
+)
 
   return <RouterProvider router={router} />;
 }

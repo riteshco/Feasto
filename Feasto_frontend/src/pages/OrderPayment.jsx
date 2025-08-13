@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { GetOrderPayment } from "@/api/fetchAPI";
 import { PaymentDoneAPICall } from "@/api/Payment";
+import { toast , Toaster } from "sonner";
 
 export function OrderPaymentPage() {
   const { id } = useParams();
@@ -29,7 +30,12 @@ export function OrderPaymentPage() {
   }
 
   async function PaymentDone(PaymentId){
-    await PaymentDoneAPICall(PaymentId)
+    const message = await PaymentDoneAPICall(PaymentId)
+    toast(message, {
+          action: {
+            label: "Ok",
+          },
+        })
     let data = await GetOrderPayment(id);
     setPaymentDetail(data);
   }
@@ -39,6 +45,7 @@ export function OrderPaymentPage() {
         <>
             <Navbar page="OrderDetailPage" />
             <div className="relative w-full h-96 mt-16">
+            <Toaster position="top-center" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 text-white p-4">
                     <h1 className="text-5xl font-bold mb-4">Order #{id}</h1>
                 </div>

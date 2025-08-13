@@ -6,8 +6,10 @@ export async function PaymentDoneAPICall(PaymentId) {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to complete payment!");
-    alert(`Payment complete!`);
+    let message = `Payment complete!`
+    return message
+
   } catch (err) {
-    alert(err.message);
+    return err.message
   }
 }
