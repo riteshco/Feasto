@@ -8,7 +8,8 @@ import { GetProducts } from "@/api/fetchAPI"
 import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
-import { toast , Toaster } from "sonner"
+import { toast, Toaster } from "sonner"
+import { QuantityCounter } from "@/components/QuantityCounter"
 
 export function CustomerHome() {
 
@@ -16,12 +17,15 @@ export function CustomerHome() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [selectedQty, setSelectedQty] = useState(0);
+
+
     const [searchTerm, setSearchTerm] = useState("");
 
-    
+
     const [quantities, setQuantities] = useState({});
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         async function fetchProducts() {
             try {
@@ -34,41 +38,35 @@ export function CustomerHome() {
             }
         }
         fetchProducts();
-        
+
     }, []);
-    
+
     const filteredProducts = products.filter((p) =>
-    p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchTerm.toLowerCase())
+        p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (loading) return <div>Loading products...</div>;
     if (error) return <div>Error: {error}</div>;
 
     function handleQuantityChange(productId, value) {
-    let qty = Number(value);
-    if (isNaN(qty) || qty < 1) qty = 1;
-    if (qty > 1000) qty = 1000;
+        let qty = Number(value);
+        if (isNaN(qty) || qty < 1) qty = 1;
+        if (qty > 1000) qty = 1000;
 
-    setQuantities((prev) => ({
-      ...prev,
-      [productId]: qty,
-    }));
+        setQuantities((prev) => ({
+            ...prev,
+            [productId]: qty,
+        }));
     }
 
-    async function addToCart(productId) {
-        let qty = quantities[productId] || 1;
-        const message = await AddToCartAPICall(productId , qty);
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
-
-    }
+    const handleAddToCart = async (productID , productName) => {
+    await AddToCartAPICall(productID, quantities[productID]);
+    toast.success(`${productName} (x${quantities[productID]}) added to cart`);
+  };
 
     async function addOneToCart(productId) {
-        await AddToCartAPICall(productId , 1);
+        await AddToCartAPICall(productId, 1);
         navigate("/cart")
     }
 
@@ -76,7 +74,7 @@ export function CustomerHome() {
         <>
             <Navbar page="CustomerHome" />
             <div className="relative w-full h-96 mt-16">
-                <Toaster position="top-center"/>
+                <Toaster position="top-center" />
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}
@@ -89,9 +87,9 @@ export function CustomerHome() {
                     <h1 className="text-5xl font-bold mb-4">Welcome to Feasto</h1>
                     <form action="" className="flex justify-center gap-4 w-full">
                         <Input
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-1/2 font-extrabold text-2xl bg-white/15" placeholder="Search products..." />
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-1/2 font-extrabold text-2xl bg-white/15" placeholder="Search products..." />
                     </form>
                 </div>
             </div>
@@ -114,29 +112,33 @@ export function CustomerHome() {
                                 Price : ${product.price}
                             </CardHeader>
                             <CardContent>
-                                    <div className="flex flex-col gap-6">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
-                                            <Input
-                                                id={`qty-${product.id}`}
-                                                type="number"
-                                                min={1}
-                                                max={1000}
-                                                required
-                                                value={quantities[product.id] || 1}
-                                                onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                <div className="flex flex-col gap-6">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
+                                        <div className="flex gap-4">
+                                        <QuantityCounter
+                                            initialQty={1}
+                                            onChange={(newQty) => handleQuantityChange(product.id , newQty)}
                                             />
-                                            <Button onClick={() => addToCart(product.id)} variant="outline">Add to Cart</Button>
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
-                                        </div>
+
+                                        <Button
+                                            onClick={() => {handleAddToCart(product.id , product.product_name)}}
+                                            variant="outline"
+                                            className="w-1/4  hover:bg-red-600 text-white"
+                                            >
+                                            Add to Cart
+                                        </Button>
+                                            </div>
                                     </div>
+                                    <div className="grid gap-2">
+                                        <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
+                                    </div>
+                                </div>
                             </CardContent>
                         </div>
                     </Card>
                 ))
-            : nil}
+                    : nil}
 
             </div>
         </>
