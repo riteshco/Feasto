@@ -1,9 +1,9 @@
-export async function ChangeUserRoleAPICall(UserId) {
+export async function ChangeUserRoleAPICall(UserId , newRole) {
     try {
     const res = await fetch(`http://localhost:3000/api/edit-user-role/${UserId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({"user_role":"chef"}),
+      body: JSON.stringify({"user_role":newRole}),
       credentials: "include",
     });
     console.log(res)

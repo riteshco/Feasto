@@ -69,6 +69,7 @@ func EditUserRoleAPI(w http.ResponseWriter , r *http.Request){
 				"message":  err.Error(),
 			})
 		} else{
+			_ , _ = models.AddChangeRoleToDB(id , new_role)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(status)
 			json.NewEncoder(w).Encode(map[string]interface{}{

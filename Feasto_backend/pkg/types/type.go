@@ -50,6 +50,7 @@ type User struct {
 	Email string `json:"email"`
 	UserRole string `json:"user_role"`
 	HashedPassword string `json:"password"`
+	ChangeRequest *string `json:"change_role_to"`
 }
 
 type Order struct {

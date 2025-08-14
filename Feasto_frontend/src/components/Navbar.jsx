@@ -16,8 +16,6 @@ export function Navbar({page , user}) {
   Cookies.remove("auth_token");
   }
 
-
-
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
    useEffect(() => {
@@ -74,6 +72,14 @@ export function Navbar({page , user}) {
               <NavigationMenuLink asChild>
                 <Link to="/orders">
                   <Button variant="ghost">Orders</Button>
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+              <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/change-role">
+                  <Button variant="ghost">Change Role</Button>
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>

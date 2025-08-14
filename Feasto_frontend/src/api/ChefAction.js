@@ -6,8 +6,8 @@ export async function DeliverOrderAPICall(OrderId) {
       credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to deliver the order");
-    alert(`Delivered Order #${OrderId} to the customer!`);
+    return `Delivered Order #${OrderId} to the customer!`;
   } catch (err) {
-    alert(err.message);
+    return err.message;
   }
 }

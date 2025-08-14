@@ -17,7 +17,6 @@ export function CustomerHome() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [selectedQty, setSelectedQty] = useState(0);
 
 
     const [searchTerm, setSearchTerm] = useState("");

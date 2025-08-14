@@ -72,21 +72,42 @@ export const columns = [
             <div className="lowercase">{row.getValue("user_role")}</div>
     },
     {
+        accessorKey: "change_role_to",
+        header: "Requested Role",
+        cell: ({ row }) => (
+            <div className="lowercase">{row.getValue("change_role_to") || "—"}</div>
+        ),
+    },
+    {
         accessorKey: "actions",
         header: "Actions",
         enableHiding: false,
         cell: ({ row }) => {
             const role = row.getValue("user_role")
-            return role === "admin" || role=="chef" ? (<Button variant="ghost">Nope
-            </Button>) 
-            : (<Button onClick={()=>{AskToChangeRole(row.getValue("id"))}} >Change role to Chef
-            </Button>);
+            const request = row.getValue("change_role_to")
+            console.log("Current role:", role)
+            console.log("Requested role:", request)
+
+            return request && request !== role
+                ? (
+                    <Button
+                        onClick={() => AskToChangeRole(row.getValue("id") , request)}
+                    >
+                        Change role
+                    </Button>
+                    
+                )
+                : (
+                    <Button variant="ghost" disabled>
+                        No Request
+                    </Button>
+                )
         }
     },
 ]
-async function AskToChangeRole(UserId){
+async function AskToChangeRole(UserId , newRole){
     UserId = parseInt(UserId , 10)
-    await ChangeUserRoleAPICall(UserId)
+    await ChangeUserRoleAPICall(UserId , newRole)
 }
 
 export function DataTableDemo() {

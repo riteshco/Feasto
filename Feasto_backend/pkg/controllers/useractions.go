@@ -154,6 +154,21 @@ func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
+func AddChangeRequestAPI(w http.ResponseWriter , r *http.Request){
+	vars := mux.Vars(r)
+	role := vars["role"]
+	CustomerID := r.Context().Value("id").(int)
+	status , err := models.AddChangeRoleToDB(CustomerID , role)
+	if err != nil {
+		http.Error(w , "Server Error" , status)
+		fmt.Println("Error in requesting role change : " , err)
+		return
+	} else {
+		w.WriteHeader(status)
+		w.Write([]byte("Added change request Successfully!!"))
+	}
+}
+
 func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]

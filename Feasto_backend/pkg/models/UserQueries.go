@@ -80,16 +80,16 @@ func GetAllUsersDB() ([]types.User , int , error) {
 
 	rows, err := DB.Query(query)
     if err != nil {
-        return nil , http.StatusInternalServerError , fmt.Errorf("error fetching users: %v", err)
+		return nil , http.StatusInternalServerError , fmt.Errorf("error fetching users: %v", err)
     }
     defer rows.Close()
-
+	
     var users []types.User
-
+	
     for rows.Next() {
-        var u types.User
-        if err := rows.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword); err != nil {
-            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
+		var u types.User
+        if err := rows.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword, &u.ChangeRequest); err != nil {
+			return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
         }
         users = append(users, u)
     }
@@ -106,7 +106,7 @@ func GetSingleUserDB(id int) (types.User , int , error) {
 
 	var u types.User
 	row := DB.QueryRow(query, id)
-	err := row.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword)
+	err := row.Scan(&u.Id, &u.Username, &u.MobileNumber, &u.Email, &u.UserRole, &u.HashedPassword, &u.ChangeRequest)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return types.User{}, http.StatusNotFound ,fmt.Errorf("user not found with ID : %d" , id)
@@ -115,4 +115,24 @@ func GetSingleUserDB(id int) (types.User , int , error) {
 	}
 
 	return u, http.StatusOK , nil
+}
+
+func AddChangeRoleToDB(id int , newRole string) (int , error) {
+	query := "UPDATE Users SET change_role_to = ? WHERE id = ?"
+
+	result , err := DB.Exec(query, newRole , id)
+	if err != nil {
+        return http.StatusInternalServerError , fmt.Errorf("error changing user role request: %v", err)
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return http.StatusInternalServerError , fmt.Errorf("error fetching rows affected: %v", err)
+    }
+
+    if rowsAffected == 0 {
+        return http.StatusNotFound , fmt.Errorf("no user found with ID %d", id)
+    }
+
+	return http.StatusOK , nil
 }

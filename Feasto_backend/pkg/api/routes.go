@@ -68,6 +68,8 @@ func SetupRouter() *mux.Router {
 
 	authRouter.HandleFunc("/cartItems", controllers.GetCartItemsAPI).Methods("GET")
 
+	authRouter.HandleFunc("/change_role_request/{role}", controllers.AddChangeRequestAPI).Methods("POST")
+
 	// -- Chef specific action --
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
 	

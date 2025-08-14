@@ -15,6 +15,7 @@ import { DataTableDemo } from './pages/admin/Allusers'
 import { AllOrdersPage } from './pages/admin/AllOrders'
 import { AllPaymentsPage } from './pages/admin/AllPayments'
 import Layout from './components/Layout';
+import { ChangeRolePage } from './pages/ChangeRole';
 
 function App() {
 
@@ -119,7 +120,15 @@ function App() {
         <AddFoodPage/>
       </ProtectedRoute>
     )
-  }
+  },
+  {
+    path: "/change-role",
+    element: (
+      <ProtectedRoute>
+        <ChangeRolePage/>
+      </ProtectedRoute>
+    )
+  },
   ]
 }]
 )
