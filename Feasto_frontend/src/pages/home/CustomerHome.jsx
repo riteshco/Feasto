@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { GetProducts } from "@/api/fetchAPI"
+import { GetProducts } from "@/api/FetchAPI"
 import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
@@ -94,7 +94,6 @@ export function CustomerHome() {
             </div>
 
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
-                {console.log(products)}
                 {filteredProducts ? filteredProducts.map((product) => (
 
                     <Card className="w-3/4 flex">
@@ -116,7 +115,7 @@ export function CustomerHome() {
                                         <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
                                         <div className="flex gap-4">
                                         <QuantityCounter
-                                            initialQty={1}
+                                            initialQty={0}
                                             onChange={(newQty) => handleQuantityChange(product.id , newQty)}
                                             />
 

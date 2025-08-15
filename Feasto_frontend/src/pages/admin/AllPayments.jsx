@@ -2,7 +2,7 @@ import { Navbar } from "@/components/Navbar"
 import MainImage from "@/assets/food_home_image.jpg"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { useEffect, useState } from "react"
-import { GetAllPaymentsAPICall } from "@/api/fetchAPI"
+import { GetAllPaymentsAPICall } from "@/api/FetchAPI"
 
 export function AllPaymentsPage() {
 

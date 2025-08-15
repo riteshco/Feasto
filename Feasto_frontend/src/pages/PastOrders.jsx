@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { fetchUserPastOrder } from "@/api/fetchAPI";
+import { fetchUserPastOrder } from "@/api/FetchAPI";
 import { useNavigate } from "react-router-dom";
 
 export function PastOrdersPage() {

@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "./Config";
+
 export async function AddChangeRequest(role) {
   try {
-    const res = await fetch(`http://localhost:3000/api/change_role_request/${role}`, {
+    const res = await fetch(`${API_BASE_URL}/change_role_request/${role}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

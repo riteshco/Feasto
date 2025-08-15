@@ -3,7 +3,7 @@ import MainImage from "@/assets/food_home_image.jpg"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { GetAllOrdersAPICall } from "@/api/fetchAPI"
+import { GetAllOrdersAPICall } from "@/api/FetchAPI"
 import { AcceptOrderAPICall } from "@/api/AdminAction"
 import { Toaster , toast } from "sonner"
 
@@ -29,7 +29,6 @@ export function AllOrdersPage() {
     }, []);
 
     async function AskToAcceptOrder(OrderID){
-        console.log(OrderID)
         const message = await AcceptOrderAPICall(OrderID)
         toast(message, {
                 action: {

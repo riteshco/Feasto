@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "./Config";
+
 export async function DeliverOrderAPICall(OrderId) {
     try {
-    const res = await fetch(`http://localhost:3000/api/order-done/${OrderId}`, {
+    const res = await fetch(`${API_BASE_URL}/order-done/${OrderId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { fetchUserOrder } from "@/api/fetchAPI";
+import { fetchUserOrder } from "@/api/FetchAPI";
 import { useNavigate } from "react-router-dom";
 
 export function UserOrderPage() {
@@ -13,7 +13,6 @@ export function UserOrderPage() {
   async function AskToFetch() {
       let data = await fetchUserOrder();
       setOrders(data);
-      console.log(data)
   }
   AskToFetch();
   }, []);

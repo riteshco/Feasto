@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "./Config";
+
 export async function AddFoodAPICall(credentials) {
   try {
-    const res = await fetch("http://localhost:3000/api/add-food", {
+    const res = await fetch(`${API_BASE_URL}/add-food`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials),

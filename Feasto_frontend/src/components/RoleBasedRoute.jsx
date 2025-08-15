@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 import { ChefHome } from "@/pages/home/ChefHome";
 import { CustomerHome } from "@/pages/home/CustomerHome";
-import { getUserFromToken } from "@/utils/auth";
+import { getUserFromToken } from "@/utils/Auth";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export function RoleBasedRoute() {

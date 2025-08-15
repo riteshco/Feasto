@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "./Config";
+
 export async function AddToCartAPICall(productId, quantity) {
   try {
-    const res = await fetch(`http://localhost:3000/api/add-to-cart/${productId}/${quantity}`, {
+    const res = await fetch(`${API_BASE_URL}/add-to-cart/${productId}/${quantity}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -14,7 +16,7 @@ export async function AddToCartAPICall(productId, quantity) {
 
 export async function RemoveFromCart(OrderItemId) {
   try {
-    const res = await fetch(`http://localhost:3000/api/remove-from-cart/${OrderItemId}`, {
+    const res = await fetch(`${API_BASE_URL}/remove-from-cart/${OrderItemId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -27,7 +29,7 @@ export async function RemoveFromCart(OrderItemId) {
 }
 
 export async function fetchCart() {
-  const res = await fetch("http://localhost:3000/api/cartItems", {
+  const res = await fetch(`${API_BASE_URL}/cartItems`, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -52,7 +54,7 @@ export async function fetchCart() {
 
 export async function PlaceOrderAPICall(credentials) {
   try {
-    const res = await fetch("http://localhost:3000/api/cart/order", {
+    const res = await fetch(`${API_BASE_URL}/cart/order`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(credentials),

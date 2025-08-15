@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { GetProducts } from "@/api/fetchAPI"
+import { GetProducts } from "@/api/FetchAPI"
 import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
-import { getUserFromToken } from "@/utils/auth"
+import { getUserFromToken } from "@/utils/Auth"
 import {
     Select,
     SelectContent,

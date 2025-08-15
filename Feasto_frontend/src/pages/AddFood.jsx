@@ -11,11 +11,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AddFoodAPICall } from "@/api/Product";
-import { getUserFromToken } from "@/utils/auth";
+import { getUserFromToken } from "@/utils/Auth";
 import { Check, ChevronsUpDown } from "lucide-react"
 import { Toaster , toast } from "sonner";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/Utils"
 import {
     Command,
     CommandEmpty,
@@ -30,7 +30,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useEffect, useState } from "react";
-import { GetProducts } from "@/api/fetchAPI";
+import { GetProducts } from "@/api/FetchAPI";
 
 export function AddFoodPage() {
 
@@ -50,7 +50,6 @@ export function AddFoodPage() {
         }
         AskForFoodCategories();
     }, [])
-    console.log(categories)
 
     const AskToAddFood = async (e) => {
         e.preventDefault();

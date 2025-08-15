@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "./Config";
+
 export const GetProducts = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/all-products"
+            `${API_BASE_URL}/all-products`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -10,14 +12,14 @@ export const GetProducts = async () => {
         return products
     }
     catch (error) {
-        console.log(error);
+        alert(error.message);
     }
 }
 
 export const fetchUserOrder = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/orders"
+            `${API_BASE_URL}/orders`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -25,14 +27,14 @@ export const fetchUserOrder = async () => {
         const orders = await response.json()
         return orders
     } catch (error){
-        console.log(error)
+        alert(error.message)
     }
 }
 
 export const GetAllOrdersAPICall = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/all-orders"
+            `${API_BASE_URL}/all-orders`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -40,14 +42,14 @@ export const GetAllOrdersAPICall = async () => {
         const orders = await response.json()
         return orders
     } catch (error){
-        console.log(error)
+        alert(error.message)
     }
 }
 
 export const GetAllPaymentsAPICall = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/all-payments"
+            `${API_BASE_URL}/all-payments`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -55,14 +57,14 @@ export const GetAllPaymentsAPICall = async () => {
         const payments = await response.json()
         return payments
     } catch (error){
-        console.log(error)
+        alert(error.message)
     }
 }
 
 export const fetchUserPastOrder = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/past-orders"
+            `${API_BASE_URL}/past-orders`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -70,14 +72,14 @@ export const fetchUserPastOrder = async () => {
         const orders = await response.json()
         return orders
     } catch (error){
-        console.log(error)
+        alert(error.message)
     }
 }
 
 export const fetchUsers = async () => {
     try {
         const response = await fetch(
-            "http://localhost:3000/api/users"
+            `${API_BASE_URL}/users`
         ,{
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -85,24 +87,24 @@ export const fetchUsers = async () => {
         const users = await response.json()
         return users
     } catch (error){
-        console.log(error)
+        alert(error.message)
     }
 }
 
 export const GetUserByID = async (id) => {
     try {
         const response = await fetch(
-            `http://localhost:3000/api/user/${id}`
+            `${API_BASE_URL}/user/${id}`
         );
         user = response.json()
     }
     catch (error) {
-        console.log(error);
+        alert(error.message);
     }
 }
 export async function GetOrderPayment(OrderId) {
     try{
-        const res = await fetch(`http://localhost:3000/api/order/payment/${OrderId}`, {
+        const res = await fetch(`${API_BASE_URL}/order/payment/${OrderId}`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -116,7 +118,7 @@ export async function GetOrderPayment(OrderId) {
 }
 
 export async function GetOrderDetail(OrderId) {
-  const res = await fetch(`http://localhost:3000/api/order/items/${OrderId}`, {
+  const res = await fetch(`${API_BASE_URL}/order/items/${OrderId}`, {
     headers: {
       "Content-Type": "application/json",
     },

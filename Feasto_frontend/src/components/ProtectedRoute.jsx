@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getUserFromToken } from "../utils/auth";
+import { getUserFromToken } from "../utils/Auth";
 
 export function AdminRoute({ children }) {
   const user = getUserFromToken();

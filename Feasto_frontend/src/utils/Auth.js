@@ -13,15 +13,21 @@ export function getUserFromToken() {
 
   try {
     const decoded = jwtDecode(token);
-    // Check expiration
+
+    // Check if expired
     if (decoded.exp * 1000 < Date.now()) {
-      // Optional: Clear the cookie by setting past expiry date
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      clearCookie("auth_token"); // uses Max-Age=0
       return null;
     }
+
     return decoded;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
+
+export const clearCookie = (name) => {
+  document.cookie = `${name}=; Max-Age=0; path=/`;
+};
+
 

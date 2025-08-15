@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { GetOrderPayment } from "@/api/fetchAPI";
+import { GetOrderPayment } from "@/api/FetchAPI";
 import { PaymentDoneAPICall } from "@/api/Payment";
 import { toast , Toaster } from "sonner";
 

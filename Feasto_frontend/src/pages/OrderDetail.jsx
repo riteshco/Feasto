@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { GetOrderDetail } from "@/api/fetchAPI";
+import { GetOrderDetail } from "@/api/FetchAPI";
 
 export function OrderDetailPage() {
   const { id } = useParams();

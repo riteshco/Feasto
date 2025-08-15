@@ -8,9 +8,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { getUserFromToken } from "@/utils/auth"
+import { getUserFromToken } from "@/utils/Auth"
 import { useState } from "react"
-import { AddChangeRequest } from "@/api/roles" // make sure to import your API
+import { AddChangeRequest } from "@/api/Roles" // make sure to import your API
 import { Toaster , toast } from "sonner"
 
 export function ChangeRolePage() {

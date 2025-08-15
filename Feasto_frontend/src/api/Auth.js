@@ -1,5 +1,7 @@
+import { API_BASE_URL } from "./Config";
+
 export async function loginUser(credentials) {
-  const res = await fetch("http://localhost:3000/api/auth", {
+  const res = await fetch(`${API_BASE_URL}/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,7 +19,7 @@ export async function loginUser(credentials) {
 }
 
 export async function RegisterUser(credentials) {
-  const res = await fetch("http://localhost:3000/api/register", {
+  const res = await fetch(`${API_BASE_URL}/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,12 +35,9 @@ export async function RegisterUser(credentials) {
   return res;
 }
 
-export const setCookie = (name, value) => {
-  let expires = "";
-    const date = new Date();
-    date.setTime(date.getTime() + 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
-  document.cookie = `${name}=${value || ""}${expires}; path=/`;
+export const setCookie = (name, value , hours=1) => {
+  const maxAge = hours * 60 * 60; 
+  document.cookie = `${name}=${value || ""}; Max-Age=${maxAge}; path=/`;
 };
 
 

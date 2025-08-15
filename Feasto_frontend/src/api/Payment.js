@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "./Config";
+
 export async function PaymentDoneAPICall(PaymentId) {
   try {
-    const res = await fetch(`http://localhost:3000/api/payment-done/${PaymentId}`, {
+    const res = await fetch(`${API_BASE_URL}/payment-done/${PaymentId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

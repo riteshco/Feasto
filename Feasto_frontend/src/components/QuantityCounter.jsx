@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function QuantityCounter({ onChange, initialQty = 1 }) {
+export function QuantityCounter({ onChange, initialQty = 0 }) {
   const [qty, setQty] = useState(initialQty);
 
   const updateQty = (newQty) => {
@@ -21,7 +21,7 @@ export function QuantityCounter({ onChange, initialQty = 1 }) {
         value={qty}
         onChange={(e) => updateQty(Number(e.target.value))}
         className="w-16 text-center"
-        min={1}
+        min={0}
       />
       <Button variant="outline" size="sm" onClick={() => updateQty(qty + 1)}>
         +

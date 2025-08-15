@@ -26,7 +26,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { fetchUsers } from "@/api/fetchAPI"
+import { fetchUsers } from "@/api/FetchAPI"
 import { ChangeUserRoleAPICall } from "@/api/AdminAction"
 
 
@@ -85,8 +85,6 @@ export const columns = [
         cell: ({ row }) => {
             const role = row.getValue("user_role")
             const request = row.getValue("change_role_to")
-            console.log("Current role:", role)
-            console.log("Requested role:", request)
 
             return request && request !== role
                 ? (

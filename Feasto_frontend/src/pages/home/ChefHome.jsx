@@ -3,7 +3,7 @@ import MainImage from "@/assets/food_home_image.jpg"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import { GetAllOrdersAPICall } from "@/api/fetchAPI"
+import { GetAllOrdersAPICall } from "@/api/FetchAPI"
 import { DeliverOrderAPICall } from "@/api/ChefAction"
 import { toast , Toaster } from "sonner"
 

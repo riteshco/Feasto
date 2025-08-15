@@ -1,12 +1,13 @@
+import { API_BASE_URL } from "./Config";
+
 export async function ChangeUserRoleAPICall(UserId , newRole) {
     try {
-    const res = await fetch(`http://localhost:3000/api/edit-user-role/${UserId}`, {
+    const res = await fetch(`${API_BASE_URL}/edit-user-role/${UserId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({"user_role":newRole}),
       credentials: "include",
     });
-    console.log(res)
     if (!res.ok) throw new Error("Failed to change the role");
     alert(`Changed user #${UserId} to chef!`);
   } catch (err) {
@@ -16,7 +17,7 @@ export async function ChangeUserRoleAPICall(UserId , newRole) {
 
 export async function AcceptOrderAPICall(OrderId) {
     try {
-    const res = await fetch(`http://localhost:3000/api/gen-bill/${OrderId}`, {
+    const res = await fetch(`${API_BASE_URL}/gen-bill/${OrderId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

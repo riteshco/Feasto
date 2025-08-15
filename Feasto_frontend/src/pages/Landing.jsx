@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { loginUser , setCookie , RegisterUser} from "@/api/auth"
+import { loginUser , setCookie , RegisterUser} from "@/api/Auth"
 import { Button } from "@/components/ui/button"
 import { Navigate } from "react-router-dom"
 import {
@@ -20,7 +20,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { getUserFromToken } from "@/utils/auth"
+import { getUserFromToken } from "@/utils/Auth"
 import { toast , Toaster } from "sonner"
 
 export function Landing() {
@@ -38,7 +38,6 @@ export function Landing() {
         e.preventDefault();
         try {
         const data = await RegisterUser({ username , mobile_number , email , password });
-        console.log("Logged in:", data);
         if(data.statusText.toLowerCase() === "ok"){
             toast("User registered Successfully", {
                 action: {
@@ -68,7 +67,6 @@ export function Landing() {
         e.preventDefault();
         try {
         const data = await loginUser({ username, email , password });
-        console.log("Logged in:", data.username);
         setCookie("auth_token",data.token);
         if(data.role === "admin"){
             navigate("/admin")
