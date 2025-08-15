@@ -66,12 +66,7 @@ export function CategoriesPage() {
 
     async function addToCart(productId) {
         let qty = quantities[productId] || 1;
-        const message = await AddToCartAPICall(productId, qty);
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await AddToCartAPICall(productId, qty);
     }
 
     async function addOneToCart(productId) {

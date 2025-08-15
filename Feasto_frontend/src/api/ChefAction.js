@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function DeliverOrderAPICall(OrderId) {
@@ -7,9 +8,10 @@ export async function DeliverOrderAPICall(OrderId) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to deliver the order");
-    return `Delivered Order #${OrderId} to the customer!`;
+    
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Failed to deliver the order"); return};
+    toast.success(`Delivered Order #${OrderId} to the customer!`)
   } catch (err) {
-    return err.message;
+    toast.error(err.message)
   }
 }

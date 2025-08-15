@@ -29,12 +29,8 @@ export function ChefHome() {
     }, []);
 
     async function AskToDeliverOrder(OrderID){
-        const message = await DeliverOrderAPICall(OrderID)
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await DeliverOrderAPICall(OrderID)
+
         const allords = await GetAllOrdersAPICall();
         setAllOrders(allords);
         setLoading(false);

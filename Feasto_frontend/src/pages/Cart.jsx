@@ -22,12 +22,7 @@ export function CartPage() {
 
     async function AskToRemoveFromCart(Id){
         setCartData(prev => prev.filter(item => item.id !== Id));
-        const message = await RemoveFromCart(Id);
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await RemoveFromCart(Id);
 
         let merged = await fetchCart();
         setCartData(merged);
@@ -38,12 +33,7 @@ export function CartPage() {
         const table_number = parseInt(e.target.table_number.value , 10)
         const instructions = e.target.instructions.value
 
-        const message = await PlaceOrderAPICall({table_number , instructions})
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await PlaceOrderAPICall({table_number , instructions})
         let merged = await fetchCart();
         setCartData(merged);
     }

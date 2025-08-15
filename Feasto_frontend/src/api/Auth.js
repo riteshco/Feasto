@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function loginUser(credentials) {
@@ -11,29 +12,39 @@ export async function loginUser(credentials) {
     credentials: "include", // important if you want cookies (JWT) to be set
   });
 
-  if (!res.ok) {
-    throw new Error("Login failed");
-  }
+  const data = await res.json()
 
-  return res.json();
+  if (!res.ok) {
+    toast.error(data.message || "Something went wrong")
+    return
+  }
+  return data;
 }
 
 export async function RegisterUser(credentials) {
-  const res = await fetch(`${API_BASE_URL}/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+  try{
 
-    body: JSON.stringify(credentials),
-  });
+    const res = await fetch(`${API_BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      
+      body: JSON.stringify(credentials),
+    });
+    
+    const data = await res.json()
 
-  if (!res.ok) {
-    throw new Error("Register failed");
+    if (!res.ok) {
+      toast.error(data.message || "Something went wrong")
+      return
+    }
+
+    toast.success(data.message)
+  } catch (error){
+    toast.error(error.message || "Network error")
   }
-
-  return res;
-}
+  }
 
 export const setCookie = (name, value , hours=1) => {
   const maxAge = hours * 60 * 60; 

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function PaymentDoneAPICall(PaymentId) {
@@ -7,11 +8,10 @@ export async function PaymentDoneAPICall(PaymentId) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to complete payment!");
-    let message = `Payment complete!`
-    return message
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Failed to complete payment!"); return};
+    toast.success(`Payment complete!`)
 
   } catch (err) {
-    return err.message
+    toast.error(err.message)
   }
 }

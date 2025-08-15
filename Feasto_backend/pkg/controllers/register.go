@@ -40,54 +40,6 @@ func validateSignupRequest (user  types.UserRegister ) error {
 	return nil
 }
 
-
-func RegisterUser(w http.ResponseWriter , r *http.Request){
-	username := r.PostFormValue("username")
-	mobile_number := r.PostFormValue("mobile")
-	email := r.PostFormValue("email")
-	password := r.PostFormValue("password")
-
-	user := types.UserRegister{
-		Username: username,
-		MobileNumber: mobile_number,
-		Email: email,
-		Password: password,
-	}
-
-	err := validateSignupRequest(user)
-	if err != nil {
-		http.Error(w , err.Error() , http.StatusBadRequest)
-		return
-	} 
-
-	hashed_password := passwords.HashPassword(password)
-
-	register := types.UserRegisterDB{
-		Username: username,
-		MobileNumber: mobile_number,
-		Email: email,
-		UserRole: constants.RoleCustomer,
-		HashedPassword: hashed_password,
-	}
-
-	success , status , err := models.RegisterUserDB(register)
-	if err != nil {
-		fmt.Printf("Could not log user")
-		toSend := types.Message{Message: err.Error()}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
-		return
-	}
-	if success {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("User registered Successfully!!"))
-		return
-	}
-}
-
 func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
 	var user types.UserRegister
 
@@ -98,8 +50,8 @@ func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
 
 	err := validateSignupRequest(user)
 	if err != nil {
-		http.Error(w , err.Error() , http.StatusBadRequest)
-		return
+		utils.ErrorHandling(w , err.Error() , http.StatusBadRequest)
+    	return
 	} 
 
 	username := user.Username
@@ -119,19 +71,14 @@ func RegisterUserAPI(w http.ResponseWriter , r *http.Request){
 
 	success , status , err := models.RegisterUserDB(register)
 	if err != nil {
-		fmt.Printf("Could not log user")
-		toSend := types.Message{Message: err.Error()}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
-		return
+			utils.ErrorHandling(w , err.Error() , status)
+    		return
 	}
 	if success {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("User registered Successfully!!"))
-		return
+		w.Header().Set("Content-Type", "application/json")
+    	w.WriteHeader(http.StatusOK)
+    	json.NewEncoder(w).Encode(types.Message{Message: "User registered successfully!"})
+    	return
 	}
 
 }

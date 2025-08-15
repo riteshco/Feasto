@@ -8,6 +8,7 @@ import (
 
 	"github.com/riteshco/Feasto/pkg/constants"
 	"github.com/riteshco/Feasto/pkg/types"
+	"github.com/riteshco/Feasto/pkg/utils"
 
 	"github.com/gorilla/mux"
 	"github.com/riteshco/Feasto/pkg/models"
@@ -19,18 +20,14 @@ func DeleteUserAPI(w http.ResponseWriter , r *http.Request){
 	idStr := vars["id"]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-    	http.Error(w, "Invalid user ID", http.StatusBadRequest)
+    	utils.ErrorHandling(w , "Invalid User Id" , http.StatusBadRequest)
     	return
 	}
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == constants.RoleAdmin {
 		status , err := models.DeleteUserDB(id)
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(status)
-			json.NewEncoder(w).Encode(map[string]interface{}{
-				"message":  err.Error(),
-			})
+			utils.ErrorHandling(w , err.Error() , status)
 		} else{
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(status)
@@ -63,11 +60,7 @@ func EditUserRoleAPI(w http.ResponseWriter , r *http.Request){
 		new_role := user_role.Role
 		status , err := models.EditUserRoleDB(new_role , id)
 		if err != nil{
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(status)
-			json.NewEncoder(w).Encode(map[string]interface{}{
-				"message":  err.Error(),
-			})
+			utils.ErrorHandling(w , err.Error() , status)
 		} else{
 			_ , _ = models.AddChangeRoleToDB(id , new_role)
 			w.Header().Set("Content-Type", "application/json")
@@ -87,7 +80,7 @@ func GetAllUsersAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin {
 		users , status , err := models.GetAllUsersDB()
 		if err != nil {
-        	http.Error(w, err.Error(), status)
+        	utils.ErrorHandling(w , err.Error() , status)
         	return
     	}
     	w.Header().Set("Content-Type", "application/json")
@@ -110,7 +103,7 @@ func GetSingleUserAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin {
 		user , status , err := models.GetSingleUserDB(id)
 		if err != nil {
-        	http.Error(w, err.Error(), status)
+        	utils.ErrorHandling(w , err.Error() , status)
         	return
     	}
     	w.Header().Set("Content-Type", "application/json")
@@ -126,7 +119,7 @@ func GetAllOrdersAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin || UserRole == constants.RoleChef {
 		orders, status , err := models.GetAllOrdersDB()
 		if err != nil {
-        	http.Error(w, err.Error(), status)
+        	utils.ErrorHandling(w , err.Error() , status)
 			fmt.Println("Error in getting all-orders from DB : " , err)
         	return
     	}
@@ -143,7 +136,7 @@ func GetAllPaymentsAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin {
 		payments, status , err := models.GetAllPaymentsDB()
 		if err != nil {
-        	http.Error(w, err.Error(), status)
+        	utils.ErrorHandling(w , err.Error() , status)
         	return
     	}
     	w.Header().Set("Content-Type", "application/json")
@@ -166,7 +159,7 @@ func DeleteProductAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin {
 		status , err := models.DeleteProductDB(productId)
 		if err != nil {
-			http.Error(w , "Server Error" , status)
+			utils.ErrorHandling(w , "Server Error" , status)
 			return
 		} else {
 			w.WriteHeader(status)
@@ -190,7 +183,7 @@ func GenBillAPI(w http.ResponseWriter , r *http.Request) {
 	if UserRole == constants.RoleAdmin {
 		statusCode , err := models.AcceptOrderDB(orderId)
 		if err != nil {
-			http.Error(w , err.Error() , statusCode)
+			utils.ErrorHandling(w , err.Error() , statusCode)
 			return
 		} else {
 			w.WriteHeader(http.StatusOK)

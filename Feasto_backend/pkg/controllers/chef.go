@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/riteshco/Feasto/pkg/constants"
 	"github.com/riteshco/Feasto/pkg/models"
+	"github.com/riteshco/Feasto/pkg/utils"
 )
 
 func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
@@ -21,7 +22,7 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 	if UserRole == constants.RoleChef {
 		status , err := models.CompleteOrderDB(OrderId)
 		if err != nil {
-			http.Error(w , err.Error() , status)
+			utils.ErrorHandling(w , err.Error() , status)
 			return
 		}
 		w.WriteHeader(http.StatusOK)

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function ChangeUserRoleAPICall(UserId , newRole) {
@@ -8,10 +9,10 @@ export async function ChangeUserRoleAPICall(UserId , newRole) {
       body: JSON.stringify({"user_role":newRole}),
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to change the role");
-    alert(`Changed user #${UserId} to chef!`);
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Something went wrong"); return}
+    toast.success(`Successfully Changed role to ${newRole} of User #${UserId}`)
   } catch (err) {
-    alert(err.message);
+    toast.error(err.message)
   }
 }
 
@@ -22,9 +23,9 @@ export async function AcceptOrderAPICall(OrderId) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to accept the order");
-    alert(`Accepted Order #${OrderId} from the customer!`);
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Something went wrong"); return}
+    toast.success(`Successfully accepted the Order#${OrderId}`)
   } catch (err) {
-    alert(err.message);
+    toast.error(err.message)
   }
 }

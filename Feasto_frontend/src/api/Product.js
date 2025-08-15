@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function AddFoodAPICall(credentials) {
@@ -8,9 +9,9 @@ export async function AddFoodAPICall(credentials) {
             body: JSON.stringify(credentials),
             credentials: "include"
         });
-    if (!res.ok) throw new Error("Failed to add food to the menu");
-    return `Successfully Added to the menu!`
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Failed to add food to the menu"); return }
+    toast.success(`Successfully Added to the menu!`)
   } catch (error) {
-    return error.message
+    toast.error(error.message)
   }
 }

@@ -29,12 +29,7 @@ export function AllOrdersPage() {
     }, []);
 
     async function AskToAcceptOrder(OrderID){
-        const message = await AcceptOrderAPICall(OrderID)
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await AcceptOrderAPICall(OrderID)
 
         const allords = await GetAllOrdersAPICall();
         setAllOrders(allords);

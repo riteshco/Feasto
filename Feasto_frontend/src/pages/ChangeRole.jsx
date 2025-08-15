@@ -24,8 +24,7 @@ export function ChangeRolePage() {
             alert("Please select a role first!")
             return
         }
-        const message = await AddChangeRequest(role)
-        toast.success(message)
+        await AddChangeRequest(role)
     }
 
     const roles = ["admin", "chef", "customer"]

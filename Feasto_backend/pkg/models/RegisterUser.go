@@ -14,7 +14,7 @@ func RegisterUserDB(user types.UserRegisterDB) (bool , int , error) {
 	if err != nil {
 		if mysqlErr, ok := err.(*mysqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
 			fmt.Println("Duplicate entry in registration")
-			return false, http.StatusAlreadyReported , fmt.Errorf("user already exists")
+			return false, http.StatusBadRequest , fmt.Errorf("user already exists")
 		} else {
 			fmt.Println("error inserting into the database", err)
 			return false, http.StatusInternalServerError , fmt.Errorf("error in database")

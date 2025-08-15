@@ -17,18 +17,14 @@ func SetupRouter() *mux.Router {
 	router.HandleFunc("/" , test_handler ).Methods("GET")
 
 	//--Registration--
-	router.HandleFunc("/register" , controllers.RegisterUser).Methods("POST")
 	router.HandleFunc("/api/register" , controllers.RegisterUserAPI).Methods("POST")
 
 	//--authentication--
-	router.HandleFunc("/auth" , controllers.AuthenticateUser).Methods("POST")
 	router.HandleFunc("/api/auth" , controllers.AuthenticateUserAPI).Methods("POST")
 
 	authRouter := router.PathPrefix("/api").Subrouter()
 	authRouter.Use(middleware.JWTAuthMiddleware)
 	
-	//--Pages (For front end)--
-	// authRouter.HandleFunc("/order/bill/{id:[0-9]+}", controllers.OrderBillPage).Methods("GET")
 
 	authRouter.HandleFunc("/past-orders", controllers.UserPastOrdersAPI).Methods("GET")
 
@@ -103,14 +99,6 @@ func Run() {
 	fmt.Println("Listening on http://localhost:3000")
 	http.ListenAndServe(":3000", handler)
 }
-
-
-// func Run(){
-	
-
-// 	fmt.Println("Listening on http://localhost:3000")
-// 	http.ListenAndServe(":3000" , router)
-// }
 
 func test_handler(w http.ResponseWriter , r * http.Request){
 	fmt.Fprintf(w , "Hello World!")

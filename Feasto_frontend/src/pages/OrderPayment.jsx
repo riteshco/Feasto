@@ -30,12 +30,8 @@ export function OrderPaymentPage() {
   }
 
   async function PaymentDone(PaymentId){
-    const message = await PaymentDoneAPICall(PaymentId)
-    toast(message, {
-          action: {
-            label: "Ok",
-          },
-        })
+    await PaymentDoneAPICall(PaymentId)
+ 
     let data = await GetOrderPayment(id);
     setPaymentDetail(data);
   }

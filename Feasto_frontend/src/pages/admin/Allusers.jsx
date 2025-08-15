@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/table"
 import { fetchUsers } from "@/api/FetchAPI"
 import { ChangeUserRoleAPICall } from "@/api/AdminAction"
+import { toast, Toaster } from "sonner"
 
 
 
@@ -149,6 +150,7 @@ export function DataTableDemo() {
             <div className="nav">
                 <Navbar user="admin" />
             </div>
+            <Toaster position="top-center"/>
             <div className="title">
                 <div className="flex justify-center font-extrabold title text-5xl mt-16">
                     All-Users

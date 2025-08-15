@@ -7,6 +7,7 @@ import (
 
 	"github.com/riteshco/Feasto/pkg/models"
 	"github.com/riteshco/Feasto/pkg/types"
+	"github.com/riteshco/Feasto/pkg/utils"
 )
 
 func AddFoodAPI(w http.ResponseWriter , r *http.Request){
@@ -26,12 +27,7 @@ func AddFoodAPI(w http.ResponseWriter , r *http.Request){
 	success , status , err := models.AddFoodDB(food)
 	if err != nil {
 		fmt.Println("Could not log product")
-		toSend := types.Message{Message: err.Error()}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		utils.ErrorHandling(w , err.Error() , status)
 		return
 	}
 	if success {
@@ -46,7 +42,7 @@ func GetAllProductsAPI(w http.ResponseWriter , r *http.Request) {
 	products, status , err := models.GetProductsDB()
 	if err != nil {
 		fmt.Println("Error in getting the products from DB : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w , err.Error() , status)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

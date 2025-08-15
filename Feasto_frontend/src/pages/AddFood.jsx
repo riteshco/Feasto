@@ -58,12 +58,8 @@ export function AddFoodPage() {
         const category = e.target.category.value
         const image_url = e.target.image_url.value
 
-        const message = await AddFoodAPICall({ product_name, price, category, image_url })
-        toast(message, {
-                action: {
-                    label: "Ok",
-                },
-        })
+        await AddFoodAPICall({ product_name, price, category, image_url })
+
         e.target.product_name.value = ""
         e.target.price.value = ""
         e.target.category.value = ""

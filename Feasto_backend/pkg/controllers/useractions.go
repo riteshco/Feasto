@@ -9,18 +9,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/riteshco/Feasto/pkg/models"
 	"github.com/riteshco/Feasto/pkg/types"
+	"github.com/riteshco/Feasto/pkg/utils"
 )
 
 func UserOrdersAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
 	orders ,status , err := models.GetOrdersByCustomerIdDB(CustomerID)
 	if err != nil {
-		toSend := types.Message{Message: err.Error()}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		utils.ErrorHandling(w , err.Error() , status)
 		fmt.Println("Error in getting orders from Database : " , err)
 		return
 	}
@@ -33,12 +29,7 @@ func UserPastOrdersAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
 	orders ,status , err := models.GetPastOrdersByCustomerIdDB(CustomerID)
 	if err != nil {
-		toSend := types.Message{Message: err.Error()}
-		b, err := json.Marshal(toSend)
-		if err != nil {
-			fmt.Println(err, "could not marshal message")
-		}
-		http.Error(w, string(b), status)
+		utils.ErrorHandling(w , err.Error() , status)
 		fmt.Println("Error in getting orders from Database : " , err)
 		return
 	}
@@ -53,19 +44,19 @@ func AddToCartAPI(w http.ResponseWriter , r *http.Request){
 	idStr := vars["id"]
 	productId , err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid product ID", http.StatusBadRequest)
+		utils.ErrorHandling(w , "Invalid quantity" , http.StatusBadRequest)
 		return
 	}
 	CustomerID := r.Context().Value("id").(int)
 	quantStr := vars["quantity"]
 	quantity , err := strconv.Atoi(quantStr)
 	if err != nil || quantity <= 0 {
-		http.Error(w, "Invalid quantity", http.StatusBadRequest)
+		utils.ErrorHandling(w, "Invalid quantity", http.StatusBadRequest)
 		return
 	}
 	status , err := models.InsertOrderItemsDB(CustomerID , productId , quantity)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", http.StatusBadRequest)
 		fmt.Println("Error in inserting orderItem by ID and quantity in DB : " , err)
 		return
 	} else {
@@ -78,13 +69,13 @@ func GetCartItemsAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
 	orderItems , status , err := models.GetCartOrderItemsDB(CustomerID)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in getting OrderItem in DB : " , err)
 		return
 	}
 	productItems , status , err := models.GetCartProductItemsDB(CustomerID)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in getting ProductItems in DB : " , err)
 		return
 	}
@@ -112,13 +103,13 @@ func OrderItemsAPI(w http.ResponseWriter , r *http.Request){
 
 	orderItems , status , err := models.GetCartOrderItemsByOrderIdDB(CustomerID , OrderID)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in getting OrderItem by OrderID in DB : " , err)
 		return
 	}
 	productItems , status , err := models.GetCartProductItemsByOrderIdDB(CustomerID , OrderID)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in getting ProductItems by OrderID in DB : " , err)
 		return
 	}
@@ -145,7 +136,7 @@ func RemoveFromCartAPI(w http.ResponseWriter , r *http.Request){
 	}
 	status , err := models.RemoveOrderItemDB(CustomerID , ItemId)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in removing OrderItem in DB : " , err)
 		return
 	} else {
@@ -160,7 +151,7 @@ func AddChangeRequestAPI(w http.ResponseWriter , r *http.Request){
 	CustomerID := r.Context().Value("id").(int)
 	status , err := models.AddChangeRoleToDB(CustomerID , role)
 	if err != nil {
-		http.Error(w , "Server Error" , status)
+		utils.ErrorHandling(w, "Server Error", status)
 		fmt.Println("Error in requesting role change : " , err)
 		return
 	} else {
@@ -181,7 +172,7 @@ func DeleteOrderAPI(w http.ResponseWriter , r *http.Request) {
 	status , err := models.DeleteOrderDB(CustomerID , OrderId)
 	if err != nil {
 		fmt.Println("Error in deleting order in DB : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w, err.Error(), status)
 		return
 	} else {
 		w.WriteHeader(http.StatusOK)
@@ -201,7 +192,7 @@ func PaymentDoneAPI(w http.ResponseWriter , r *http.Request) {
 	status , err := models.PaymentStatusCompleteDB(CustomerID , PaymentId)
 	if err != nil {
 		fmt.Println("Error in completing payment : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w, err.Error(), status)
 		return
 	} else {
 		w.WriteHeader(http.StatusOK)
@@ -221,7 +212,7 @@ func GetPaymentThroughOrderAPI(w http.ResponseWriter , r *http.Request) {
 	payment , status , err := models.GetPaymentThroughOrderDB(OrderId , CustomerID)
 	if err != nil {
 		fmt.Println("Error in getting payment through order id : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w, err.Error(), status)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -235,7 +226,7 @@ func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 	status , orderItems , err := models.CheckIfOrderLegitDB(CustomerID)
 	if err != nil {
 		fmt.Println("Error in ordering : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w, err.Error(), status)
 		return
 	}
 
@@ -251,19 +242,19 @@ func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 	status , OrderId , err := models.InsertUserOrderDB(CustomerID , TableNumber , Instructions)
 	if err != nil {
 		fmt.Println("Error in ordering : " , err)
-		http.Error(w , err.Error() , status)
+		utils.ErrorHandling(w, err.Error(), status)
 		return
 	} else {
 		status , err := models.UpdateOrderItemsDB(CustomerID , OrderId)
 		if err != nil {
 			fmt.Println("Error in ordering : " , err)
-			http.Error(w , err.Error() , status)
+			utils.ErrorHandling(w, err.Error(), status)
 			return
 		}
 		prices, status , err := models.GetPricesDB(OrderId)
 		if err != nil {
 			fmt.Println("Error in getting prices from DB : " , err)
-			http.Error(w , err.Error() , status)
+			utils.ErrorHandling(w, err.Error(), status)
 			return
 		}
 		var totalAmount float64
@@ -275,7 +266,7 @@ func CartOrderAPI(w http.ResponseWriter , r *http.Request) {
 		status , err = models.InsertPaymentDB(CustomerID , OrderId , totalAmount)
 		if err != nil {
 			fmt.Println("Error in inserting payment in db : ", err)
-			http.Error(w , err.Error() , status)
+			utils.ErrorHandling(w, err.Error(), status)
 			return
 		}
 		w.WriteHeader(http.StatusOK)

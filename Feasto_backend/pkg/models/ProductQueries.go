@@ -14,7 +14,7 @@ func AddFoodDB(food types.FoodToAdd) (bool , int , error){
 	if err != nil {
 		if mysqlErr, ok := err.(*mysqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
 			fmt.Println("Duplicate entry in registration")
-			return false, http.StatusAlreadyReported , fmt.Errorf("product already exists")
+			return false, http.StatusBadRequest , fmt.Errorf("product already exists")
 		} else {
 			fmt.Println("error inserting into the database", err)
 			return false, http.StatusInternalServerError ,fmt.Errorf("error in database")

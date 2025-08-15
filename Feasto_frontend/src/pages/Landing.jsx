@@ -37,21 +37,7 @@ export function Landing() {
     async function handleRegisterSubmit(e) {
         e.preventDefault();
         try {
-        const data = await RegisterUser({ username , mobile_number , email , password });
-        if(data.statusText.toLowerCase() === "ok"){
-            toast("User registered Successfully", {
-                action: {
-                    label: "Ok",
-                },
-            })
-        }
-        else{
-            toast(data.statusText, {
-                action: {
-                    label: "Ok",
-                },
-            })
-        }
+        await RegisterUser({ username , mobile_number , email , password });
         navigate("/");
         } catch (err) {
             console.error(err);

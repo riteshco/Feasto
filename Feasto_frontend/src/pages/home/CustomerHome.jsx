@@ -61,7 +61,6 @@ export function CustomerHome() {
 
     const handleAddToCart = async (productID , productName) => {
     await AddToCartAPICall(productID, quantities[productID]);
-    toast.success(`${productName} (x${quantities[productID]}) added to cart`);
   };
 
     async function addOneToCart(productId) {
@@ -118,7 +117,7 @@ export function CustomerHome() {
                                             initialQty={0}
                                             onChange={(newQty) => handleQuantityChange(product.id , newQty)}
                                             />
-
+                                        {quantities[product.id] > 0 ?
                                         <Button
                                             onClick={() => {handleAddToCart(product.id , product.product_name)}}
                                             variant="outline"
@@ -126,6 +125,7 @@ export function CustomerHome() {
                                             >
                                             Add to Cart
                                         </Button>
+                                        : null}
                                             </div>
                                     </div>
                                     <div className="grid gap-2">

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { API_BASE_URL } from "./Config";
 
 export async function AddChangeRequest(role) {
@@ -7,11 +8,10 @@ export async function AddChangeRequest(role) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Failed to request role change!");
-    let message = `Request to change role sent`
-    return message
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Failed to request role change!"); return}
+    toast.success(`Request to change role sent`)
 
   } catch (err) {
-    return err.message
+    toast.error(err.message)
   }
 }

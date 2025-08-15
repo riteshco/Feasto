@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
+	"net/http"
 	"net/mail"
 	"os"
 	"strings"
@@ -45,4 +47,10 @@ func IsValidEmail(email string) bool {
 	domain := addr[at+1:]
 
 	return strings.Contains(domain, ".") 
+}
+
+func ErrorHandling(w http.ResponseWriter ,message string , status int){
+	w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(types.Message{Message: message})
 }
