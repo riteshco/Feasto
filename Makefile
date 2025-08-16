@@ -2,23 +2,23 @@
 
 # Build and start all services
 build:
-	docker-compose up --build
+	docker compose up --build
 
 # Start all services (without rebuilding)
 up:
-	docker-compose up
+	docker compose up
 
 # Stop all services
 down:
-	docker-compose down
+	docker compose down
 
 # Stop services and DELETE ALL DATA (for a fresh start)
 clean:
-	docker-compose down -v
+	docker compose down -v
 
 # Follow the logs of all running services
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 help:
 	@echo "Available commands:"
