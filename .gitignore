@@ -1,6 +1,6 @@
 Feasto_backend/.env
 Feasto_backend/tmp/
-
+.env
 
 # Logs
 Feasto_frontend/logs

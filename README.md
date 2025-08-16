@@ -41,7 +41,7 @@ You need to create three `.env` files for the application to work.
     MYSQL_PORT=3306
     MYSQL_DATABASE=feasto
     MYSQL_USER=test_user
-    MYSQL_PASSWORD=1234
+    MYSQL_PASSWORD=your_mysql_password
     MYSQL_ROOT_PASSWORD=root
     JWT_SECRET=your_secret
     ```
