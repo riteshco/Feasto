@@ -69,11 +69,6 @@ func SetupRouter() *mux.Router {
 	// -- Chef specific action --
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
 	
-	// ---Needs Front-end---
-	// authRouter.HandleFunc("/new-name/{id:[0-9]+}", controllers.NewProductNameAPI).Methods("POST")
-	// authRouter.HandleFunc("/new-price/{id:[0-9]+}", controllers.NewProductPriceAPI).Methods("POST")
-	// ---------------------
-	
 	
 	authRouter.HandleFunc("/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("PATCH")
 	
@@ -87,7 +82,7 @@ func Run() {
 	router := SetupRouter()
 	    // Configure CORS options
     c := cors.New(cors.Options{
-        AllowedOrigins:   []string{"http://localhost:5173"}, // Replace with your frontend's origin
+        AllowedOrigins:   []string{"http://localhost:5173"},
         AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
         AllowedHeaders:   []string{"Authorization", "Content-Type"},
         AllowCredentials: true,

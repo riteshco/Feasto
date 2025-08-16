@@ -10,13 +10,11 @@ import (
 
 func main(){
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("error loading environment variables : %v" , err)
-		return
+	if err := godotenv.Load(); err != nil {
+		log.Println("INFO: .env file not found, using system environment variables.")
 	}
 
-	_,err = models.InitDatabase()
+	_,err := models.InitDatabase()
 	if err!= nil {
 		log.Fatalf("Failed to initialize database : %v" , err)
 	}

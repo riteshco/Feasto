@@ -8,12 +8,15 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState , useEffect } from "react";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Navbar({page , user}) {
 
+  const navigate = useNavigate()
+
   function LogoutUser() {
   Cookies.remove("auth_token");
+  navigate("/")
   }
 
   const [show, setShow] = useState(true);

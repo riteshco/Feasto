@@ -1,2 +1,2 @@
-USE test_db;
+USE feasto;
 DROP TABLE IF EXISTS Users;

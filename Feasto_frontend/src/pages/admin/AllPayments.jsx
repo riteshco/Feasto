@@ -64,7 +64,7 @@ export function AllPaymentsPage() {
                                     Payment Status : {payment.payment_status === "completed" ? <span className="text-green-500">{payment.payment_status}</span> : <span className="text-red-500">{payment.payment_status}</span>}
                                 </div>
                                 <div>
-                                    <span className="font-extrabold">Total Amount </span>: ${payment.Total_amount}
+                                    <span className="font-extrabold">Total Amount </span>: ${payment.Total_payment}
                                 </div>
                             </CardContent>
                         </div>

@@ -8,12 +8,11 @@ import { ProtectedRoute } from "./ProtectedRoute";
 
 export function RoleBasedRoute() {
   const user = getUserFromToken()
-
+  console.log("outside if :" , user)
   if (!user) {
+    console.log("inside if :" , user)
     return <Navigate to="/" replace />;
   }
-
-  try {
     const role = user.user_role
 
     switch (role) {
@@ -21,14 +20,9 @@ export function RoleBasedRoute() {
         return <ChefHome />;
       case "customer":
         return (
-          <ProtectedRoute >
             <CustomerHome />
-          </ProtectedRoute>
       )
       default:
         return <h1>Unauthorized</h1>;
     }
-  } catch (err) {
-    return <Navigate to="/" replace />;
-  }
 }
