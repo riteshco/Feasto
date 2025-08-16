@@ -37,12 +37,12 @@ You need to create three `.env` files for the application to work.
 * **Create a file named:** `.env`
 * **Content:**
     ```env
-    MYSQL_HOST=localhost
+    MYSQL_HOST=db #<----This should stay as "db", don't change this variable
     MYSQL_PORT=3306
     MYSQL_DATABASE=feasto
     MYSQL_USER=test_user
     MYSQL_PASSWORD=your_mysql_password
-    MYSQL_ROOT_PASSWORD=root
+    MYSQL_ROOT_PASSWORD=your_root_password
     JWT_SECRET=your_secret
     ```
 
