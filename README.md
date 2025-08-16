@@ -9,7 +9,7 @@ Ensure you have the following installed:
 * **Git**
 * **Make**
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the Repository
 ```bash
@@ -54,7 +54,7 @@ You need to create three `.env` files for the application to work.
     VITE_API_BASE_URL=http://localhost:3000/api
     ```
 
-## ⚙️ Running the Application
+## Running the Application
 
 Use the provided `Makefile` for simple commands. Run these from the project's root directory.
 
@@ -83,7 +83,7 @@ Use the provided `Makefile` for simple commands. Run these from the project's ro
     make clean
     ```
 
-## ✅ Accessing the Application
+## Accessing the Application
 
 * **Frontend:** `http://localhost:5173`
 * **Backend API:** `http://localhost:3000`
