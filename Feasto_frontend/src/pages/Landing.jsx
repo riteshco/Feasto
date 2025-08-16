@@ -28,7 +28,7 @@ export function Landing() {
     
     if(user) {
         if(user.user_role === "admin"){
-            return <Navigate to="/admin" replace />;
+            return <Navigate to="/users" replace />;
         }
         return <Navigate to="/home" replace />;
     }

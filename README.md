@@ -4,10 +4,15 @@ This guide provides the essential steps to set up and run the Feasto application
 
 ## Prerequisites
 
-Ensure you have the following installed:
+1.Ensure you have the following installed:
 * **Docker** & **Docker Compose**
 * **Git**
 * **Make**
+
+2.Create Database in your Mysql (ensure that the user has privelages over the tables in that database)
+```mysql
+CREATE DATABASE IF NOT EXISTS feasto;
+```
 
 ## Setup Instructions
 

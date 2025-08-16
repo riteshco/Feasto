@@ -34,7 +34,7 @@ export function ChangeRolePage() {
             <Toaster position="top-center"/>
             <div className="title text-3xl">Change Role to:</div>
             <Select onValueChange={(value) => setRole(value)}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-auto">
                     <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>

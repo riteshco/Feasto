@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import { AddToCartAPICall } from "@/api/Cart"
 import { useNavigate } from "react-router-dom"
 import { getUserFromToken } from "@/utils/Auth"
+import { DeleteProductAPICall } from "@/api/Product"
 import {
     Select,
     SelectContent,
@@ -18,7 +19,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Toaster , toast } from "sonner"
+import { Toaster } from "sonner"
 
 export function CategoriesPage() {
     const user = getUserFromToken()
@@ -72,6 +73,12 @@ export function CategoriesPage() {
     async function addOneToCart(productId) {
         await AddToCartAPICall(productId, 1);
         navigate("/cart")
+    }
+
+    async function AskToDelete(productID) {
+        await DeleteProductAPICall(productID)
+        const prods = await GetProducts();
+        setProducts(prods);
     }
 
     const filteredProducts =
@@ -154,7 +161,9 @@ export function CategoriesPage() {
                                         <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
                                     </div>
                                 </div>
-                                    : null}
+                                    : 
+                                    <Button onClick={() => AskToDelete(product.id)} variant="destructive_outline">Delete product</Button>
+                                    }
                             </CardContent>
                         </div>
                     </Card>
