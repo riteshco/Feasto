@@ -1,6 +1,3 @@
-# File: Feasto_frontend/Dockerfile
-# Replace your existing frontend Dockerfile with this content.
-
 # ---- Stage 1: Build ----
 FROM node:24-alpine AS builder
 
