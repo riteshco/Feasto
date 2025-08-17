@@ -75,13 +75,17 @@ func UpdateFoodAPI(w http.ResponseWriter , r *http.Request){
 
 }
 
-func GetAllProductsAPI(w http.ResponseWriter , r *http.Request) {
-	products, status , err := models.GetProductsDB()
-	if err != nil {
-		fmt.Println("Error in getting the products from DB : " , err)
-		utils.ErrorHandling(w , err.Error() , status)
+func GetAllProductsAPI(w http.ResponseWriter, r *http.Request) {
+	products := models.CacheData("products", 60, func() ([]types.Product, error) {
+		prods, _, err := models.GetProductsDB() // ignore status here
+		return prods, err
+	})
+
+	if products == nil {
+		utils.ErrorHandling(w, "failed to fetch products", http.StatusInternalServerError)
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(products)
 }

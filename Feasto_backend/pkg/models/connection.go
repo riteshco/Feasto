@@ -30,7 +30,7 @@ func InitDatabase() (*sql.DB , error) {
 			err = DB.Ping()
 			if err == nil {
 				fmt.Println("Successfully connected to Database!")
-				DB.SetMaxOpenConns(75)
+				DB.SetMaxOpenConns(151)
 				DB.SetMaxIdleConns(50)
 				DB.SetConnMaxLifetime(5 * time.Minute)
 				return DB, nil

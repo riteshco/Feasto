@@ -75,21 +75,27 @@ func EditUserRoleAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
-func GetAllUsersAPI(w http.ResponseWriter , r *http.Request) {
-	UserRole := r.Context().Value("user_role").(string)
-	if UserRole == constants.RoleAdmin {
-		users , status , err := models.GetAllUsersDB()
-		if err != nil {
-        	utils.ErrorHandling(w , err.Error() , status)
-        	return
-    	}
-    	w.Header().Set("Content-Type", "application/json")
-    	json.NewEncoder(w).Encode(users)
-	} else {
+func GetAllUsersAPI(w http.ResponseWriter, r *http.Request) {
+	userRole := r.Context().Value("user_role").(string)
+	if userRole != constants.RoleAdmin {
 		http.Error(w, "unauthorized access", http.StatusUnauthorized)
 		return
 	}
+
+	users := models.CacheData("all-users", 60, func() ([]types.User, error) {
+		allUsers, _, err := models.GetAllUsersDB()
+		return allUsers, err
+	})
+
+	if users == nil {
+		utils.ErrorHandling(w, "failed to fetch users", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
 }
+
 
 func GetSingleUserAPI(w http.ResponseWriter , r *http.Request) {
 	vars := mux.Vars(r)
