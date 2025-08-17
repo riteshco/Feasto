@@ -16,6 +16,17 @@ CREATE DATABASE IF NOT EXISTS feasto;
 
 ## Setup Instructions
 
+# A. Through Script
+
+1. Run the following command to setup the environment and docker container for you.
+
+    ```
+    chmod +x ./SetupScript.sh
+    ./SetupScript.sh
+    ```
+
+# B. Manual
+
 ### 1. Clone the Repository
 ```bash
 git clone "https://github.com/riteshco/Feasto"
