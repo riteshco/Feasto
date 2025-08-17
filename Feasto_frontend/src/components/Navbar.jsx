@@ -70,7 +70,7 @@ export function Navbar({page , user}) {
               </NavigationMenuLink>
             </NavigationMenuItem>
             : null}
-            {page === "CustomerHome" ? 
+            {page === "CustomerHome" || page==="ChefHome" ? 
               <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
@@ -96,6 +96,15 @@ export function Navbar({page , user}) {
               </NavigationMenuLink>
             </NavigationMenuItem>
                 </>:null}
+            {page === "ChefHome" ? 
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/delivered-orders">
+                  <Button variant="ghost">Delivered-Orders</Button>
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+                :null}
             {page === "CustomerHome" || page === "ChefHome" ? 
             <NavigationMenuItem>
               <NavigationMenuLink asChild>

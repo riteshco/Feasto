@@ -25,6 +25,23 @@ func AddFoodDB(food types.FoodToAdd) (bool , int , error){
 	}
 }
 
+func UpdateFoodDB(food types.FoodToAdd, foodID int) (bool , int , error){
+	query := "UPDATE Products SET product_name = ? , isavailable=? , price=? , category=? , image_url=? WHERE id = ?"
+	_ , err := DB.Exec(query , food.ProductName , true , food.Price , food.Category , food.ImageUrl , foodID)
+	if err != nil {
+		if mysqlErr, ok := err.(*mysqldriver.MySQLError); ok && mysqlErr.Number == 1062 {
+			fmt.Println("Duplicate entry in registration")
+			return false, http.StatusBadRequest , fmt.Errorf("product name already exists")
+		} else {
+			fmt.Println("error updating into the database", err)
+			return false, http.StatusInternalServerError ,fmt.Errorf("error in database")
+		}
+	} else {
+		fmt.Println("Product details updated successfully")
+		return true, http.StatusOK ,nil
+	}
+}
+
 func DeleteProductDB(productID int) (int ,error) {
 	query := "DELETE FROM Products WHERE id = ?"
 	_ , err := DB.Exec(query , productID)

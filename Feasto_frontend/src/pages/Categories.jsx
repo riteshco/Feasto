@@ -2,6 +2,32 @@ import { Navbar } from "@/components/Navbar"
 import MainImage from "@/assets/food_home_image.jpg"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { UpdateFoodAPICall } from "@/api/Product"
+import { cn } from "@/lib/Utils"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { Check, ChevronsUpDown } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { GetProducts } from "@/api/FetchAPI"
@@ -24,15 +50,19 @@ import { Toaster } from "sonner"
 export function CategoriesPage() {
     const user = getUserFromToken()
 
+    const [open, setOpen] = useState(false)
     const [products, setProducts] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [value, setValue] = useState("")
+
+    const [categories, setCategory] = useState([])
 
     const [quantities, setQuantities] = useState({});
     const navigate = useNavigate();
 
     const [selectedCategory, setSelectedCategory] = useState("all");
-    
+
     useEffect(() => {
         async function fetchProducts() {
             try {
@@ -45,11 +75,21 @@ export function CategoriesPage() {
             }
         }
         fetchProducts();
-        
+        async function AskForFoodCategories() {
+            const data = await GetProducts()
+            let cats = []
+            const uniquedata = [...new Map(data.map(item => [item.category, item])).values()];
+            uniquedata.map((product) => {
+                cats.push({ value: product.category, label: product.category })
+            })
+            setCategory(cats)
+        }
+        AskForFoodCategories();
     }, []);
-    
+
     const uniqueCategories = products
-    ? [...new Set(products.map((product) => product.category))] : [];
+        ? [...new Set(products.map((product) => product.category))] : [];
+
 
     if (loading) return <div>Loading products...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -80,22 +120,35 @@ export function CategoriesPage() {
         const prods = await GetProducts();
         setProducts(prods);
     }
+    const AskToUpdateFood = async (e, id) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = {
+            product_name: formData.get("new_product_name"),
+            price: parseFloat(formData.get("new_price")),
+            category: formData.get("new_category"),
+            image_url: formData.get("new_image_url") || null,
+        };
+
+        await UpdateFoodAPICall(data, id)
+    }
 
     const filteredProducts =
-    selectedCategory === "all"
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+        selectedCategory === "all"
+            ? products
+            : products.filter((p) => p.category === selectedCategory);
 
     return (
         <>
             {user.user_role === "admin"
                 ?
-                <Navbar page="CategoriesPage" user="admin"/>
+                <Navbar page="CategoriesPage" user="admin" />
                 :
                 <Navbar page="CategoriesPage" />
             }
             <div className="relative w-full h-96 mt-16">
-                <Toaster position="top-center"/>
+                <Toaster position="top-center" />
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}
@@ -142,28 +195,183 @@ export function CategoriesPage() {
                                 Price : ${product.price}
                             </CardHeader>
                             <CardContent>
-                                {user.user_role === "customer" ? 
-                                <div className="flex flex-col gap-6">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
-                                        <Input
-                                        id={`qty-${product.id}`}
-                                        type="number"
-                                        min={1}
-                                        max={1000}
-                                        required
-                                        value={quantities[product.id] || 1}
-                                        onChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                                        />
-                                        <Button onClick={() => addToCart(product.id)} variant="outline">Add to Cart</Button>
+                                {user.user_role === "customer" ?
+                                    <div className="flex flex-col gap-6">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor={`qty-${product.id}`}>Quantity:</Label>
+                                            <Input
+                                                id={`qty-${product.id}`}
+                                                type="number"
+                                                min={1}
+                                                max={1000}
+                                                required
+                                                value={quantities[product.id] || 1}
+                                                onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                            />
+                                            <Button onClick={() => addToCart(product.id)} variant="outline">Add to Cart</Button>
                                         </div>
-                                    <div className="grid gap-2">
-                                        <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
+                                        <div className="grid gap-2">
+                                            <Button onClick={() => addOneToCart(product.id)}>Order Now</Button>
+                                        </div>
                                     </div>
-                                </div>
-                                    : 
-                                    <Button onClick={() => AskToDelete(product.id)} variant="destructive_outline">Delete product</Button>
-                                    }
+                                    :
+                                    <div className="flex flex-col gap-4">
+                                        <Button onClick={() => AskToDelete(product.id)} className="w-1/4" variant="destructive_outline">Delete product</Button>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                {/* 👇 prevent accidental submit */}
+                                                <Button type="button" variant="outline" className="w-1/4">
+                                                    Edit details
+                                                </Button>
+                                            </DialogTrigger>
+
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Edit details</DialogTitle>
+                                                    <DialogDescription>
+                                                        Make changes to the product here. Click save when you&apos;re done.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                <form onSubmit={(e) => AskToUpdateFood(e, product.id)}>
+                                                    <div className="grid gap-4">
+                                                        <div className="grid gap-3">
+                                                            <Label htmlFor="new_product_name">Product Name</Label>
+                                                            <Input
+                                                                id="new_product_name"
+                                                                name="new_product_name"
+                                                                defaultValue={product.product_name}
+                                                                required
+                                                            />
+                                                        </div>
+
+                                                        {/* Price */}
+                                                        <div className="grid gap-3">
+                                                            <Label htmlFor="new_price">Price</Label>
+                                                            <Input
+                                                                id="new_price"
+                                                                name="new_price"
+                                                                type="number"
+                                                                min={1}
+                                                                max={1000}
+                                                                step={0.01}
+                                                                defaultValue={product.price}
+                                                                required
+                                                            />
+                                                        </div>
+
+                                                        {/* Category */}
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="category">Category:</Label>
+                                                            <Popover open={open} onOpenChange={setOpen}>
+                                                                <PopoverTrigger asChild>
+                                                                    {/* 👇 must NOT submit */}
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={open}
+                                                                        className="w-[200px] justify-between"
+                                                                    >
+                                                                        {value
+                                                                            ? categories.find((c) => c.value === value)?.label
+                                                                            : "Select or Add Category..."}
+                                                                        <ChevronsUpDown className="opacity-50" />
+                                                                    </Button>
+                                                                </PopoverTrigger>
+
+                                                                <PopoverContent className="w-[250px] p-0 z-[9999]">
+                                                                    <Command>
+                                                                        <CommandInput
+                                                                            placeholder="Search or add new category..."
+                                                                            className="h-9"
+                                                                        />
+                                                                        <CommandList>
+                                                                            <CommandEmpty>
+                                                                                <Button
+                                                                                    type="button"
+                                                                                    className="w-full h-8 text-sm"
+                                                                                    onClick={() => {
+                                                                                        const newCategory = document.querySelector(
+                                                                                            '[placeholder="Search or add new category..."]'
+                                                                                        ).value.trim();
+
+                                                                                        if (
+                                                                                            newCategory &&
+                                                                                            !categories.some((c) => c.value === newCategory)
+                                                                                        ) {
+                                                                                            const newCatObj = {
+                                                                                                value: newCategory,
+                                                                                                label: newCategory,
+                                                                                            };
+                                                                                            setCategory((prev) => [...prev, newCatObj]);
+                                                                                            setValue(newCategory);
+                                                                                            setOpen(false);
+                                                                                        }
+                                                                                    }}
+                                                                                >
+                                                                                    ➕ Add new category
+                                                                                </Button>
+                                                                            </CommandEmpty>
+
+                                                                            <CommandGroup>
+                                                                                {categories.map((Category) => (
+                                                                                    <CommandItem
+                                                                                        key={Category.value}
+                                                                                        value={Category.value}
+                                                                                        onMouseDown={(e) => e.preventDefault()}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setValue(currentValue === value ? "" : currentValue);
+                                                                                            setOpen(false);
+                                                                                        }}
+                                                                                    >
+                                                                                        {Category.label}
+                                                                                        <Check
+                                                                                            className={cn(
+                                                                                                "ml-auto",
+                                                                                                value === Category.value
+                                                                                                    ? "opacity-100"
+                                                                                                    : "opacity-0"
+                                                                                            )}
+                                                                                        />
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
+
+                                                            <input type="hidden" name="new_category" value={value} required />
+                                                        </div>
+
+                                                        {/* Image URL */}
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="new_image_url">URL for the product image:</Label>
+                                                            <Input
+                                                                id="new_image_url"
+                                                                name="new_image_url"
+                                                                type="text"
+                                                                placeholder="Leave empty for null value"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <DialogFooter className="mt-8">
+                                                        <DialogClose asChild>
+                                                            <Button type="button" variant="outline">
+                                                                Cancel
+                                                            </Button>
+                                                        </DialogClose>
+                                                        <Button type="submit">Save changes</Button>
+                                                    </DialogFooter>
+                                                </form>
+                                            </DialogContent>
+                                        </Dialog>
+
+                                    </div>
+
+                                }
                             </CardContent>
                         </div>
                     </Card>

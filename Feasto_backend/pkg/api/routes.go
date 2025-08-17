@@ -28,6 +28,8 @@ func SetupRouter() *mux.Router {
 
 	authRouter.HandleFunc("/past-orders", controllers.UserPastOrdersAPI).Methods("GET")
 
+	authRouter.HandleFunc("/delivered-orders", controllers.DeliveredOrdersAPI).Methods("GET")
+
 	authRouter.HandleFunc("/order/items/{id:[0-9]+}", controllers.OrderItemsAPI).Methods("GET")
 
 	authRouter.HandleFunc("/order/payment/{id:[0-9]+}", controllers.GetPaymentThroughOrderAPI).Methods("GET")
@@ -35,6 +37,7 @@ func SetupRouter() *mux.Router {
 	authRouter.HandleFunc("/all-products" , controllers.GetAllProductsAPI).Methods("GET")
 	
 	authRouter.HandleFunc("/add-food" , controllers.AddFoodAPI).Methods("POST")
+	authRouter.HandleFunc("/update-food/{id:[0-9]+}" , controllers.UpdateFoodAPI).Methods("POST")
 	
 	// -- Admin Actions --
 	authRouter.HandleFunc("/users/{id:[0-9]+}" , controllers.GetSingleUserAPI).Methods("GET")

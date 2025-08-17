@@ -55,7 +55,7 @@ export function Landing() {
         const data = await loginUser({ username, email , password });
         setCookie("auth_token",data.token);
         if(data.role === "admin"){
-            navigate("/admin")
+            navigate("/users")
         } else {
             navigate("/home");
         }

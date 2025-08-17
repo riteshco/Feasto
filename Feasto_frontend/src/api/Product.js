@@ -29,3 +29,18 @@ export async function DeleteProductAPICall(productID) {
     toast.error(error.message)
   }
 }
+
+export async function UpdateFoodAPICall(credentials , productID) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/update-food/${productID}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credentials),
+            credentials: "include"
+        });
+    if (!res.ok) {const data = await res.json();toast.error(data.message || "Failed to update food details in the menu"); return }
+    toast.success(`Successfully updated the food details in the menu!`)
+  } catch (error) {
+    toast.error(error.message)
+  }
+}

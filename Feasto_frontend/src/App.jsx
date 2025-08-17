@@ -16,6 +16,7 @@ import { AllOrdersPage } from './pages/admin/AllOrders'
 import { AllPaymentsPage } from './pages/admin/AllPayments'
 import Layout from './components/Layout';
 import { ChangeRolePage } from './pages/ChangeRole';
+import { DeliveredOrdersPage } from './pages/DeliveredOrders';
 
 function App() {
 
@@ -110,6 +111,14 @@ function App() {
             element: (
               <ProtectedRoute role1="admin" role2="chef">
                 <AddFoodPage />
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: "/delivered-orders",
+            element: (
+              <ProtectedRoute role1="chef">
+                <DeliveredOrdersPage />
               </ProtectedRoute>
             )
           },

@@ -76,6 +76,21 @@ export const fetchUserPastOrder = async () => {
     }
 }
 
+export const fetchChefDeliveredOrders = async () => {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/delivered-orders`
+        ,{
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        });
+        const orders = await response.json()
+        return orders
+    } catch (error){
+        alert(error.message)
+    }
+}
+
 export const fetchUsers = async () => {
     try {
         const response = await fetch(

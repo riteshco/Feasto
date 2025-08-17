@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -18,9 +20,10 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
 		return
 	}
+	ChefID := r.Context().Value("id").(int)
 	UserRole := r.Context().Value("user_role").(string)
 	if UserRole == constants.RoleChef {
-		status , err := models.CompleteOrderDB(OrderId)
+		status , err := models.CompleteOrderDB(OrderId , ChefID)
 		if err != nil {
 			utils.ErrorHandling(w , err.Error() , status)
 			return
@@ -31,4 +34,23 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
 		return
 	}
+}
+
+func DeliveredOrdersAPI(w http.ResponseWriter , r *http.Request){
+	ChefID := r.Context().Value("id").(int)
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == constants.RoleChef {
+	orders ,status , err := models.GetDeliveredOrdersByChefIdDB(ChefID)
+	if err != nil {
+		utils.ErrorHandling(w , err.Error() , status)
+		fmt.Println("Error in getting orders from Database : " , err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(orders)
+	} else {
+		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
+		return
+	}
+
 }

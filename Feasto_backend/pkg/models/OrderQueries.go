@@ -151,10 +151,10 @@ func DeleteOrderDB(customerID int , OrderID int) (int , error) {
 	return http.StatusOK , nil
 }
 
-func CompleteOrderDB(OrderID int) (int , error) {
-	query := `UPDATE Orders SET current_status = "delivered" WHERE id = ?`
+func CompleteOrderDB(OrderID int , ChefID int) (int , error) {
+	query := `UPDATE Orders SET current_status = "delivered" , chef_id = ? WHERE id = ?`
 
-	result , err := DB.Exec(query , OrderID)
+	result , err := DB.Exec(query, ChefID , OrderID )
 	if err != nil {
 		return http.StatusInternalServerError , fmt.Errorf("error in updating order status")
 	}
@@ -170,6 +170,32 @@ func CompleteOrderDB(OrderID int) (int , error) {
 	}
 
 	return http.StatusOK , nil
+}
+
+func GetDeliveredOrdersByChefIdDB(ChefID int) ([]types.Order , int , error){
+	query := `SELECT * FROM Orders Where chef_id = ? AND current_status = "delivered"`
+	
+	rows, err := DB.Query(query , ChefID)
+    if err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error fetching orders: %v", err)
+    }
+    defer rows.Close()
+
+    var orders []types.Order
+
+    for rows.Next() {
+        var o types.Order
+        if err := rows.Scan(&o.Id, &o.CreatedAt, &o.CurrentStatus, &o.CustomerId, &o.ChefId, &o.TableNumber , &o.Instructions); err != nil {
+            return nil, http.StatusInternalServerError , fmt.Errorf("error scanning row: %v", err)
+        }
+        orders = append(orders, o)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
+    }
+
+    return orders, http.StatusOK , nil
 }
 
 func GetOrdersByCustomerIdDB(customerID int) ([]types.Order , int , error){
