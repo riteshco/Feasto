@@ -34,7 +34,7 @@ func SetupRouter() *mux.Router {
 
 	authRouter.HandleFunc("/order/payment/{id:[0-9]+}", controllers.GetPaymentThroughOrderAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/all-products" , controllers.GetAllProductsAPI).Methods("GET")
+	authRouter.HandleFunc("/all-products" , CacheMiddleware(controllers.GetAllProductsAPI)).Methods("GET")
 	
 	authRouter.HandleFunc("/add-food" , controllers.AddFoodAPI).Methods("POST")
 	authRouter.HandleFunc("/update-food/{id:[0-9]+}" , controllers.UpdateFoodAPI).Methods("POST")
@@ -46,7 +46,7 @@ func SetupRouter() *mux.Router {
 	
 	authRouter.HandleFunc("/all-orders", controllers.GetAllOrdersAPI).Methods("GET")
 	
-	authRouter.HandleFunc("/users" , controllers.GetAllUsersAPI).Methods("GET")
+	authRouter.HandleFunc("/users" , CacheMiddleware(controllers.GetAllUsersAPI)).Methods("GET")
 	
 	authRouter.HandleFunc("/delete-product/{id:[0-9]+}", controllers.DeleteProductAPI).Methods("DELETE")
 	

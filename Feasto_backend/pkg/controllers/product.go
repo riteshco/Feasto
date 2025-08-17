@@ -76,7 +76,7 @@ func UpdateFoodAPI(w http.ResponseWriter , r *http.Request){
 }
 
 func GetAllProductsAPI(w http.ResponseWriter, r *http.Request) {
-	products := models.CacheData("products", 60, func() ([]types.Product, error) {
+	products := models.CacheData("products", 60*10, func() ([]types.Product, error) {
 		prods, _, err := models.GetProductsDB() // ignore status here
 		return prods, err
 	})

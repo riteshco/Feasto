@@ -1,8 +1,10 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	mysqldriver "github.com/go-sql-driver/mysql"
 	"github.com/riteshco/Feasto/pkg/types"
@@ -53,27 +55,30 @@ func DeleteProductDB(productID int) (int ,error) {
 }
 
 func GetProductsDB() ( []types.Product , int , error) {
-	query := `SELECT * FROM Products`
+	query := `SELECT id , product_name , price , category , image_url FROM Products`
 	
-	rows, err := DB.Query(query)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	
+	rows, err := DB.QueryContext(ctx, query)
     if err != nil {
         return nil,http.StatusInternalServerError , fmt.Errorf("error fetching products: %v", err)
     }
     defer rows.Close()
 
-    var orders []types.Product
+	var products = make([]types.Product, 0, 1000)
 
     for rows.Next() {
         var p types.Product
-        if err := rows.Scan(&p.Id, &p.ProductName, &p.IsAvailable, &p.Price, &p.Category, &p.ImageUrl); err != nil {
+        if err := rows.Scan(&p.Id, &p.ProductName, &p.Price, &p.Category, &p.ImageUrl); err != nil {
             return nil, http.StatusInternalServerError, fmt.Errorf("error scanning row: %v", err)
         }
-        orders = append(orders, p)
+        products = append(products, p)
     }
 
     if err := rows.Err(); err != nil {
         return nil,http.StatusInternalServerError , fmt.Errorf("error iterating rows: %v", err)
     }
 
-    return orders , http.StatusOK, nil
+    return products , http.StatusOK, nil
 }

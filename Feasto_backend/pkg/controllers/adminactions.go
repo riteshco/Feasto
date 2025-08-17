@@ -82,7 +82,7 @@ func GetAllUsersAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users := models.CacheData("all-users", 60, func() ([]types.User, error) {
+	users := models.CacheData("all-users", 60*10, func() ([]types.User, error) {
 		allUsers, _, err := models.GetAllUsersDB()
 		return allUsers, err
 	})
