@@ -13,7 +13,14 @@ This guide provides the essential steps to set up and run the Feasto application
 
 # A. Through Script
 
-1. Run the following command to setup the environment and docker container for you.
+1. Clone the Repository
+
+    ```bash
+    git clone "https://github.com/riteshco/Feasto"
+    cd Feasto
+    ```
+
+2. Run the following command to setup the environment and docker container for you.
 
     ```
     chmod +x ./SetupScript.sh
