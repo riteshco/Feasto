@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { GetAllOrdersAPICall } from "@/api/FetchAPI"
 import { DeliverOrderAPICall } from "@/api/ChefAction"
-import { toast , Toaster } from "sonner"
+import { toast, Toaster } from "sonner"
+import { getUserFromToken } from "@/utils/Auth"
+import { StartOrderAPICall } from "@/api/ChefAction"
 
 export function ChefHome() {
+
+    const user = getUserFromToken()
 
     const [AllOrders, setAllOrders] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -28,8 +32,16 @@ export function ChefHome() {
 
     }, []);
 
-    async function AskToDeliverOrder(OrderID){
+    async function AskToDeliverOrder(OrderID) {
         await DeliverOrderAPICall(OrderID)
+
+        const allords = await GetAllOrdersAPICall();
+        setAllOrders(allords);
+        setLoading(false);
+    }
+
+    async function AskToStartOrder(OrderID) {
+        await StartOrderAPICall(OrderID)
 
         const allords = await GetAllOrdersAPICall();
         setAllOrders(allords);
@@ -45,7 +57,7 @@ export function ChefHome() {
         <>
             <Navbar page="ChefHome" user="chef" />
             <div className="relative w-full h-96 mt-16">
-                <Toaster position="top-center"/>
+                <Toaster position="top-center" />
                 <div className="Main_image h-full flex justify-center">
                     <img
                         src={MainImage}
@@ -59,44 +71,60 @@ export function ChefHome() {
                 </div>
             </div>
             <div className="flex flex-col items-center cards w-full mt-8 gap-8">
-                {AllOrders ? AllOrders.map((order , index) => (
+                {AllOrders ? AllOrders.map((order, index) => (
                     order.current_status !== "delivered" ?
-                    <Card className="w-3/4 flex">
-                        <div className="cardinfo w-1/2">
-                            <CardHeader>
-                                <CardTitle className="text-3xl">Order #{index+1}</CardTitle>
-                                <CardDescription>
-                                    Created at : {order.created_at.slice(0,10)}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-4">
-                                <div>
-                                    Current Status : {order.current_status === "accepted" || order.current_status === "delivered" ? <span className="text-green-500">{order.current_status}</span> : <span className="text-red-500">{order.current_status}</span>}
-                                </div>
-                                <div>
-                                    <span className="font-extrabold">Table Number </span>: {order.table_number}
-                                </div>
-                                <div>
-                                    <span className="font-extrabold">Instructions</span> : {order.instructions}
-                                </div>
-                            </CardContent>
-                        </div>
-                        <div className="w-1/2">
-                            <CardContent className="flex flex-col gap-4 items-center justify-center my-12 py-0">
-                                {order.current_status === "accepted" ?
-                                <div className="w-3/4 flex justify-center">
-                                    <Button onClick={()=>{AskToDeliverOrder(order.id)}} className="w-1/2">Mark as delivered!</Button>
-                                </div>
-                                    :
-                                <div className="w-3/4 flex justify-center" >
-                                    <Button variant="outline" >Order not accepted/verified by Admin yet!</Button>
-                                </div>}
-                            </CardContent>
-                        </div>
-                    </Card>
-                    : null 
+                        <Card className="w-3/4 flex">
+                            <div className="cardinfo w-1/2">
+                                <CardHeader>
+                                    <CardTitle className="text-3xl">Order #{index + 1}</CardTitle>
+                                    <CardDescription>
+                                        Created at : {order.created_at.slice(0, 10)}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex flex-col gap-4">
+                                    {order.chef_id.Valid !== false ?
+                                        <div>
+                                            Current Status : "In Progress by Another Chef"
+                                        </div>
+                                        :
+                                        <div>
+                                            Current Status : {order.current_status === "accepted" || order.current_status === "delivered" ? <span className="text-green-500">{order.current_status}</span> : <span className="text-red-500">{order.current_status}</span>}
+                                        </div>
+                                    }
+                                    <div>
+                                        <span className="font-extrabold">Table Number </span>: {order.table_number}
+                                    </div>
+                                    <div>
+                                        <span className="font-extrabold">Instructions</span> : {order.instructions}
+                                    </div>
+                                </CardContent>
+                            </div>
+                            <div className="w-1/2">
+                                <CardContent className="flex flex-col gap-4 items-center justify-center my-12 py-0">
+                                    {order.current_status === "accepted" ?
+                                        order.chef_id.Valid ?
+                                            order.chef_id.Int64 !== user.id ?
+                                                <div>
+                                                    <Button variant="outline" >Order taken by another chef!</Button>
+                                                </div>
+                                                :
+                                            <div className="w-3/4 flex justify-center">
+                                                <Button onClick={() => { AskToDeliverOrder(order.id) }} className="w-1/2">Mark as delivered!</Button>
+                                            </div>
+                                            :
+                                            <div className="w-3/4 flex justify-center">
+                                                <Button onClick={() => { AskToStartOrder(order.id) }} className="w-1/2">Start the order!</Button>
+                                            </div>
+                                        :
+                                        <div className="w-3/4 flex justify-center" >
+                                            <Button variant="outline" >Order not accepted/verified by Admin yet!</Button>
+                                        </div>}
+                                </CardContent>
+                            </div>
+                        </Card>
+                        : null
                 ))
-            : null}
+                    : null}
             </div>
         </>
     )

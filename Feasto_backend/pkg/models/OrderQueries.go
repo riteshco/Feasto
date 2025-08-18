@@ -152,7 +152,7 @@ func DeleteOrderDB(customerID int , OrderID int) (int , error) {
 }
 
 func CompleteOrderDB(OrderID int , ChefID int) (int , error) {
-	query := `UPDATE Orders SET current_status = "delivered" , chef_id = ? WHERE id = ?`
+	query := `UPDATE Orders SET current_status = "delivered" WHERE chef_id = ? AND id = ?`
 
 	result , err := DB.Exec(query, ChefID , OrderID )
 	if err != nil {
@@ -167,6 +167,27 @@ func CompleteOrderDB(OrderID int , ChefID int) (int , error) {
 
 	if rowsAffected == 0 {
 		return http.StatusNotFound , fmt.Errorf("no order found for given order ID and customer to completing")
+	}
+
+	return http.StatusOK , nil
+}
+
+func TakeOrderDB(OrderID int , ChefID int) (int , error) {
+	query := `UPDATE Orders SET chef_id = ? WHERE id = ?`
+
+	result , err := DB.Exec(query, ChefID , OrderID )
+	if err != nil {
+		return http.StatusInternalServerError , fmt.Errorf("error in updating order's chef id")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println("error checking affected rows:", err)
+		return http.StatusInternalServerError , fmt.Errorf("could not verify database update")
+	}
+
+	if rowsAffected == 0 {
+		return http.StatusNotFound , fmt.Errorf("no order found for given order ID and customer to take")
 	}
 
 	return http.StatusOK , nil

@@ -71,6 +71,7 @@ func SetupRouter() *mux.Router {
 
 	// -- Chef specific action --
 	authRouter.HandleFunc("/order-done/{id:[0-9]+}" , controllers.OrderDoneAPI).Methods("POST")
+	authRouter.HandleFunc("/take-order/{id:[0-9]+}" , controllers.TakeOrderAPI).Methods("POST")
 	
 	
 	authRouter.HandleFunc("/edit-user-role/{id:[0-9]+}", controllers.EditUserRoleAPI).Methods("PATCH")

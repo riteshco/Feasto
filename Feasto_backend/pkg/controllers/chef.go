@@ -36,6 +36,30 @@ func OrderDoneAPI(w http.ResponseWriter , r *http.Request){
 	}
 }
 
+func TakeOrderAPI(w http.ResponseWriter , r *http.Request){
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	OrderId , err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w , "Invalid Order ID" , http.StatusBadRequest)
+		return
+	}
+	ChefID := r.Context().Value("id").(int)
+	UserRole := r.Context().Value("user_role").(string)
+	if UserRole == constants.RoleChef {
+		status , err := models.TakeOrderDB(OrderId , ChefID)
+		if err != nil {
+			utils.ErrorHandling(w , err.Error() , status)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Order Completed Successfully!!"))
+	} else {
+		http.Error(w , "Unauthorized access!" , http.StatusUnauthorized)
+		return
+	}
+}
+
 func DeliveredOrdersAPI(w http.ResponseWriter , r *http.Request){
 	ChefID := r.Context().Value("id").(int)
 	UserRole := r.Context().Value("user_role").(string)
