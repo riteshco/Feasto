@@ -16,10 +16,6 @@ MYSQL_DB_NAME=${MYSQL_DB_NAME:-feasto}
 read -p "Enter MySQL username: " MYSQL_USER_NAME
 read -p "Enter MySQL user password: " MYSQL_USER_PASS
 
-read -p "Enter Backend MySQL user [default: test_user]: " MYSQL_BACKEND_USER
-MYSQL_BACKEND_USER=${MYSQL_BACKEND_USER:-test_user}
-
-read -p "Enter Backend MySQL user password: " MYSQL_BACKEND_PASS
 read -p "Enter JWT secret: " JWT_SECRET
 
 echo "--------------------------------------------------"
@@ -28,30 +24,25 @@ echo "--------------------------------------------------"
 cd "$(dirname "$0")" || exit 1
 
 echo "--------------------------------------------------"
-echo "2. Creating .env files..."
+echo "2. Creating the consolidated .env file..."
 echo "--------------------------------------------------"
 
-echo "Creating root .env file..."
 cat > .env <<EOL
+# MySQL Database
 MYSQL_ROOT_PASS=$MYSQL_ROOT_PASS
 MYSQL_DB_NAME=$MYSQL_DB_NAME
 MYSQL_USER_NAME=$MYSQL_USER_NAME
 MYSQL_USER_PASS=$MYSQL_USER_PASS
-EOL
 
-echo "Creating backend .env file..."
-cat > Feasto_backend/.env <<EOL
+# Backend Configuration
 MYSQL_HOST=db
 MYSQL_PORT=3306
-MYSQL_DATABASE=$MYSQL_DB_NAME
-MYSQL_USER=$MYSQL_BACKEND_USER
-MYSQL_PASSWORD=$MYSQL_BACKEND_PASS
-MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASS
+MYSQL_USER=\$MYSQL_USER_NAME
+MYSQL_PASSWORD=\$MYSQL_USER_PASS
+MYSQL_ROOT_PASSWORD=\$MYSQL_ROOT_PASS
 JWT_SECRET=$JWT_SECRET
-EOL
 
-echo "Creating frontend .env.development file..."
-cat > Feasto_frontend/.env.development <<EOL
+# Frontend Configuration
 VITE_API_BASE_URL=http://localhost:3000/api
 EOL
 
