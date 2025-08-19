@@ -38,7 +38,7 @@ export function Landing() {
         e.preventDefault();
         try {
         await RegisterUser({ username , mobile_number , email , password });
-        navigate("/");
+        navigate("/home")
         } catch (err) {
             console.error(err);
         }

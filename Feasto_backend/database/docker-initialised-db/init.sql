@@ -3,7 +3,7 @@ USE feasto;
 
 CREATE TABLE Users (
     id integer PRIMARY KEY AUTO_INCREMENT,
-    username varchar(100) NOT NULL,
+    username varchar(100) NOT NULL UNIQUE,
     mobile_number bigint NOT NULL UNIQUE,
     email varchar(100) NOT NULL UNIQUE,
     user_role ENUM('admin' , 'customer' , 'chef') NOT NULL,

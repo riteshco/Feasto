@@ -61,6 +61,10 @@ export function CustomerHome() {
 
     const handleAddToCart = async (productID , productName) => {
     await AddToCartAPICall(productID, quantities[productID]);
+    setQuantities((prev) => ({
+        ...prev,
+        [productID]: 0,
+    }));
   };
 
     async function addOneToCart(productId) {
